@@ -125,9 +125,13 @@ module Zuora
         class_variable_get(:@@all_attributes).map(&:to_sym)
       end
 
+      def original_attr(attr)
+        attr.to_s.split('__').map { |a| a.camelize }.join('__')
+      end
+
       def original_attributes
         attributes.map do |attr|
-          attr.to_s.split('__').map { |a| a.camelize }.join('__')
+          original_attr(attr)
         end
       end
 

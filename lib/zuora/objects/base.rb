@@ -83,7 +83,7 @@ module Zuora::Objects
       keys = self.select_attributes
       if where.is_a?(Hash)
         # FIXME: improper inject usage.
-        where = where.inject([]){|t,v| t << "#{v[0].to_s.camelcase} = '#{v[1]}'"}.sort.join(' and ')
+        where = where.inject([]){|t,v| t << "#{original_attr(v[0])} = '#{v[1]}'"}.sort.join(' and ')
       end
       sql = "select #{keys.join(', ')} from #{remote_name} where #{where}"
 

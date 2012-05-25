@@ -125,6 +125,12 @@ module Zuora
         class_variable_get(:@@all_attributes).map(&:to_sym)
       end
 
+      def original_attributes
+        attributes.map do |attr|
+          attr.to_s.split('__').map { |a| a.camelize }.join('__')
+        end
+      end
+
       # the name to use when referencing remote Zuora objects
       def remote_name
         self.name.base_name

@@ -22,7 +22,7 @@ describe Zuora::SqliteConnector do
         table_name = described_class.table_name(m)
         table = @db.table_info(table_name)
         columns = table.map {|t| t["name"] }
-        camel_attrs = m.attributes.map { |a| a.to_s.camelize }
+        camel_attrs = m.original_attributes
         (camel_attrs - columns).should == []
       end
     end

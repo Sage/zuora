@@ -70,11 +70,17 @@ module Zuora::Objects
       self.class.ons
     end
 
+    # select fields to retrieve from query
+    def self.select(select)
+      @select = select
+      self
+    end
+
     # locate objects using a custom where clause, currently arel
     # is not supported as it requires an actual db connection to
     # generate the sql queries. This may be overcome in the future.
     def self.where(where)
-      keys = (attributes - unselectable_attributes).map(&:to_s).map(&:camelcase)
+      keys = self.select_attributes
       if where.is_a?(Hash)
         # FIXME: improper inject usage.
         where = where.inject([]){|t,v| t << "#{v[0].to_s.camelcase} = '#{v[1]}'"}.sort.join(' and ')
@@ -83,6 +89,8 @@ module Zuora::Objects
 
       result = self.connector.query(sql)
 
+      # reset @select after query to not propagate value for next queries
+      @select = []
       generate(result.to_hash, :query_response)
     end
 
@@ -170,6 +178,12 @@ module Zuora::Objects
         raise Zuora::ApiFailure.new result[:errors][:message]
       end
     end
+
+    def self.select_attributes
+      select_attributes = @select.present? ? @select : attributes
+      (select_attributes - unselectable_attributes).map(&:to_s).map(&:camelcase)
+    end
+
   end
 end
 

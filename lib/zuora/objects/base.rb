@@ -181,7 +181,7 @@ module Zuora::Objects
 
     def self.select_attributes
       select_attributes = @select.present? ? @select : attributes
-      (select_attributes - unselectable_attributes).map(&:to_s).map(&:camelcase)
+      (select_attributes - unselectable_attributes).map(&:to_s).map { |a| api_attr(a) }
     end
 
   end

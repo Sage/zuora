@@ -31,7 +31,7 @@ module Zuora
       keys = []
       values = []
       hash.each do |key, value|
-        keys << key.to_s.camelize
+        keys << @model.class.api_attr(key)
         values << value.to_s
       end
       place_holder = ['?'] * keys.length
@@ -57,7 +57,7 @@ module Zuora
       keys   = []
       values = []
       hash.each do |key, value|
-        keys << "#{key.to_s.camelize}=?"
+        keys << "#{@model.class.api_attr(key)}=?"
         values << value.to_s
       end
       keys   = keys.join(', ')
@@ -150,7 +150,7 @@ module Zuora
       table_name = self.table_name(model)
       attributes = model.attributes - [:id]
       attributes = attributes.map do |a|
-        "'#{a.to_s.camelize}' text"
+        "'#{model.api_attr(a)}' text"
       end
       autoid = "'Id' integer primary key autoincrement"
       attributes.unshift autoid

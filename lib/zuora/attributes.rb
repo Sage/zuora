@@ -125,6 +125,14 @@ module Zuora
         class_variable_get(:@@all_attributes).map(&:to_sym)
       end
 
+      def api_attr(lower)
+        if lower =~ /__c$/
+          lower.to_s[0..-4].camelize + '__c'
+        else
+          lower.to_s.camelize
+        end
+      end
+
       # the name to use when referencing remote Zuora objects
       def remote_name
         self.name.base_name

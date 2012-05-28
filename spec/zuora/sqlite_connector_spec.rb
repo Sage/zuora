@@ -26,6 +26,20 @@ describe Zuora::SqliteConnector do
         (camel_attrs - columns).should == []
       end
     end
+
+    it "creates the correct column for custom attributes" do
+      model = @models.first
+      model.stub(:attributes).and_return([:api_service_id__c])
+
+      described_class.build_schema
+      @db = described_class.db
+
+      table_name = described_class.table_name(model)
+      table = @db.table_info(table_name)
+      columns = table.map {|t| t["name"] }
+
+      columns.should include 'ApiServiceId__c'
+    end
   end
 
 

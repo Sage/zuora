@@ -88,6 +88,8 @@ module Zuora
     end
 
     def subscribe
+      @model.subscription.account = @model.account
+      @model.subscription.name = '12345'
       [
         :account,
         :subscription,
@@ -110,7 +112,8 @@ module Zuora
         :subscribe_response => {
           :result => {
             :success => true,
-            :id => nil
+            :id => nil,
+            :subscription_number => '12345'
           }
         }
       }

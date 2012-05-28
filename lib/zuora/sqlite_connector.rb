@@ -148,9 +148,9 @@ module Zuora
 
     def self.create_table(model)
       table_name = self.table_name(model)
-      attributes = model.original_attributes - ['Id']
+      attributes = model.attributes - [:id]
       attributes = attributes.map do |a|
-        "'#{a}' text"
+        "'#{a.to_s.camelize}' text"
       end
       autoid = "'Id' integer primary key autoincrement"
       attributes.unshift autoid

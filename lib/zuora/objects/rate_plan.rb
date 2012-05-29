@@ -5,7 +5,7 @@ module Zuora::Objects
     has_many :rate_plan_charges
     belongs_to :subscription
 
-    validates_presence_of :name, :product_rate_plan_id, :subscription_id
+    validates_presence_of :product_rate_plan_id
 
     validates_inclusion_of :amendment_type, :in => %w(Cancellation NewProduct OwnerTransfer RemoveProduct Renewal TermsAndConditions UpdateProduct), :allow_nil => true
     validates_length_of :created_by_id, :maximum => 32, :allow_nil => true

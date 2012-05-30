@@ -139,7 +139,7 @@ module Zuora
     protected
 
     def hash_result_row(row, result)
-      row = row.map {|r| r.nil? ? "" : r }
+      row = row.map {|r| r == "" ? nil : r }
       Hash[result.columns.zip(row.to_a)]
     end
 

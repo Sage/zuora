@@ -2,6 +2,15 @@ require 'spec_helper'
 require 'zuora/sqlite_connector'
 
 describe Zuora::SqliteConnector do
+  around :each do |example|
+    Zuora::Objects::Base.connector_class, old = described_class,
+      Zuora::Objects::Base.connector_class
+
+    example.run
+
+    Zuora::Objects::Base.connector_class = old
+  end
+
   describe :build_schema do
     before :each do
       mod = Zuora::Objects
@@ -176,6 +185,29 @@ describe Zuora::SqliteConnector do
         @model.create
       end
 
+    end
+  end
+
+  describe :download do
+    subject { described_class.new(nil) }
+
+    before :each do
+      acc1 = ::Zuora::Objects::Account.new
+      acc1.name = 'FOO'
+      acc1.status = 'Completed'
+      acc1.create
+
+      acc2 = ::Zuora::Objects::Account.new
+      acc2.name = 'BAR'
+      acc2.status = 'Draft'
+      acc2.create
+
+      @export = ::Zuora::Objects::Export.new
+      @export.query = 'SELECT Account.Name, Account.Status FROM Account'
+    end
+
+    it "performs the query and returns the output as CSV" do
+      subject.download(@export).should == "FOO,Completed\nBAR,Draft\n"
     end
   end
 

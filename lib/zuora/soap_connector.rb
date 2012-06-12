@@ -84,6 +84,10 @@ module Zuora
       end
     end
 
+    def download(export)
+      current_client.download(export)
+    end
+
     # Remove empty attributes from response hash
     # and typecast any known types from the wsdl
     def parse_attributes(type, attrs={})

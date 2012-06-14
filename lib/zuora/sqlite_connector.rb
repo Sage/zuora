@@ -1,4 +1,5 @@
 require 'sqlite3'
+require 'csv'
 
 module Zuora
   #Sqlite3 in memoroy connector to simulate Zuora in test environments
@@ -7,6 +8,15 @@ module Zuora
 
     def initialize(model)
       @model = model
+    end
+
+    def download(export)
+      records = query(export.query)[:query_response][:result][:records]
+      CSV.generate do |csv|
+        records.each do |record|
+          csv << record.values
+        end
+      end
     end
 
     def query(sql)

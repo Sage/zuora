@@ -2,9 +2,10 @@ module Zuora
   module Objects
     autoload :Base,                      'zuora/objects/base'
     autoload :Account,                   'zuora/objects/account'
-    autoload :Contact,                   'zuora/objects/contact'
     autoload :Amendment,                 'zuora/objects/amendment'
     autoload :CommunicationProfile,      'zuora/objects/communication_profile'
+    autoload :Contact,                   'zuora/objects/contact'
+    autoload :Export,                    'zuora/objects/export'
     # autoload :CreditBalanceAdjustment,   'zuora/objects/credit_balance_adjustment'
     autoload :Invoice,                   'zuora/objects/invoice'
     autoload :InvoiceAdjustment,         'zuora/objects/invoice_adjustment'

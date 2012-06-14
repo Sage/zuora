@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Zuora::Api do
+  subject { Zuora::Api.instance }
+
   describe "configuration" do
     before do
       Zuora::Api.any_instance.stub(:authenticated?).and_return(true)
@@ -54,6 +56,23 @@ describe Zuora::Api do
       lambda do
         Zuora::Api.instance.request(:example)
       end.should raise_error(Zuora::Fault)
+    end
+  end
+
+  describe :download do
+    it "uses NET::HTTP to download the csv" do
+      Zuora.configure(
+        :username => 'example',
+        :password => 'test',
+        :download_url => 'http://example.com/foo/bar'
+      )
+
+      export = ::Zuora::Objects::Export.new
+      export.file_id = 'FOOBAR_FILE'
+
+      Net::HTTP.any_instance.should_receive(:start).and_return(mock(Object, :body => ''))
+
+      subject.download(export)
     end
   end
 end

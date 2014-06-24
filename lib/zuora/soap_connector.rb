@@ -150,6 +150,15 @@ module Zuora
 
     protected
 
+    # Zuora doesn't like the default string format of ruby dates/times
+    def convert_value(value)
+      if [Date, Time, DateTime].any? { |klass| value.is_a?(klass) }
+        value.strftime('%FT%T')
+      else
+        value
+      end
+    end
+    
     # generate complex objects for inclusion when creating and updating records
     def generate_complex_objects(builder, action)
       @model.complex_attributes.each do |var, scope|

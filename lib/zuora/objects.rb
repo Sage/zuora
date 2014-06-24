@@ -23,6 +23,8 @@ module Zuora
     autoload :RatePlan,                  'zuora/objects/rate_plan'
     autoload :RatePlanCharge,            'zuora/objects/rate_plan_charge'
     autoload :RatePlanChargeTier,        'zuora/objects/rate_plan_charge_tier'
+    autoload :RatePlanData,              'zuora/objects/rate_plan_data'
+    autoload :RatePlanChargeData,        'zuora/objects/rate_plan_charge_data'
     # autoload :Refund,                    'zuora/objects/refund'
   end
 end

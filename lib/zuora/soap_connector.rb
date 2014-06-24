@@ -230,5 +230,13 @@ module Zuora
     def api_name(key)
       @model.class.api_attr(key).to_sym
     end
+
+    def zuora_camelize
+      if match(/__c$/)
+        self.gsub("__c","").zuora_camelize + "__c"
+      else
+        camelize
+      end
+    end
   end
 end

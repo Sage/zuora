@@ -59,11 +59,11 @@ module Zuora
     end
 
     def amend
-      Zuora::Api.instance.request(:amend) do |xml|
+      current_client.request(:amend) do |xml|
         xml.__send__(zns, :requests) do |r|
           r.__send__(zns, :Amendments) do |a|
             @model.to_hash.each do |k,v|
-              serialize(a, k.to_s.zuora_camelize.to_sym, conert_value(v)) unless v.nil?
+              serialize(a, k.to_s.zuora_camelize.to_sym, convert_value(v)) unless v.nil?
             end
             generate_complex_objects(a, :create)
           end

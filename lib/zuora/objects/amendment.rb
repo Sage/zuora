@@ -19,7 +19,7 @@ module Zuora::Objects
     validates_inclusion_of :status, :in => ["Completed", "Cancelled", "Draft", "Pending Acceptance", "Pending Activation"]
     validates_inclusion_of :term_type, :in => ['TERMED', 'EVERGREEN'], :allow_nil => true
     validates_inclusion_of :type, :in => ['Cancellation', 'NewProduct', 'OwnerTransfer', 'RemoveProduct', 'Renewal', 'UpdateProduct', 'TermsAndConditions']
-    validates_presence_of :rate_plan_data, :if => Proc.new { |a| ['NewProduct', 'RemoveProduct', 'UpdateProduct'].include?(a.type) }
+    validates_presence_of :rate_plan_data, :if => Proc.new { |a| ['NewProduct', 'RemoveProduct', 'UpdateProduct'].include?(a.type) }, :only => :apply_percentage_discount
 
     attr_accessor :amendment_ids
     attr_accessor :invoice_id
@@ -30,12 +30,12 @@ module Zuora::Objects
       defaults :status => 'Draft'
     end
 
-    def create
+    def apply_percentage_discount
       result = self.connector.amend
-      apply_response(result.to_hash, :amend_response)
+      apply_percentage_discount_response(result.to_hash, :amend_response)
     end
 
-    def apply_response(response_hash, type)
+    def apply_percentage_discount_response(response_hash, type)
       result = response_hash[type][:results]
       if result[:success]
         self.amendment_ids = result[:amendment_ids]

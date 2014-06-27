@@ -31,7 +31,7 @@ module Zuora::Objects
     end
 
     def apply_percentage_discount
-      result = self.connector.amend
+      result = self.connector.amend({ 'process_payments' => false })
       apply_percentage_discount_response(result.to_hash, :amend_response)
     end
 

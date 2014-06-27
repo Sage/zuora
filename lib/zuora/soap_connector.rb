@@ -58,10 +58,7 @@ module Zuora
       end
     end
 
-    def amend
-      #TODO Don't hard code this
-      @amend_options = { 'process_payments' => false }
-
+    def amend(amend_options={})
       current_client.request(:amend) do |xml|
         xml.__send__(zns, :requests) do |r|
           r.__send__(zns, :Amendments) do |a|
@@ -72,7 +69,7 @@ module Zuora
           end
 
           r.__send__(zns, :AmendOptions) do |ao|
-            @amend_options.each do |k,v|
+            amend_options.each do |k,v|
               xml.__send__(zns, k.to_s.zuora_camelize.to_sym, convert_value(v)) unless v.nil?
             end
           end

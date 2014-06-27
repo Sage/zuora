@@ -60,6 +60,32 @@ module Zuora
       }
     end
 
+    def amend(options={})
+      table = self.class.table_name(@model.class)
+      hash = @model.to_hash
+      hash.delete(:id)
+      keys = []
+      values = []
+      hash.each do |key, value|
+        keys << @model.class.api_attr(key)
+        values << value.to_s
+      end
+      place_holder = ['?'] * keys.length
+      keys = keys.join(', ')
+      place_holder = place_holder.join(', ')
+      insert = "INSERT into '#{table}'(#{keys}) VALUES(#{place_holder})"
+      db.execute insert, values
+      new_id = db.last_insert_row_id
+      {
+          :create_response => {
+              :result => {
+                  :success => true,
+                  :id => new_id
+              }
+          }
+      }
+    end
+
     def update
       table  = self.class.table_name(@model.class)
       hash   = @model.to_hash

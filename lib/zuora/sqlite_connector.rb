@@ -60,6 +60,7 @@ module Zuora
       }
     end
 
+    #TODO Schema update needed for this method
     def amend(options={})
       table = self.class.table_name(@model.class)
       hash = @model.to_hash

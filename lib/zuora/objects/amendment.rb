@@ -36,6 +36,8 @@ module Zuora::Objects
       apply_percentage_discount_response(result.to_hash, :amend_response)
     end
 
+    private 
+
     def apply_percentage_discount_response(response_hash, type)
       result = response_hash[type][:results]
       if result[:success]

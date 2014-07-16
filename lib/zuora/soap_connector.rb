@@ -13,11 +13,23 @@ module Zuora
       end
     end
 
+    def serialize(xml, key, value)
+      if value.kind_of?(Zuora::Objects::Base)
+        xml.__send__(zns, key.to_sym) do |child|
+          value.to_hash.each do |k, v|
+            serialize(child, k.to_s.zuora_camelize, convert_value(v)) unless v.nil?
+          end
+        end
+      else
+        xml.__send__(ons, key.to_sym, convert_value(value))
+      end
+    end
+
     def create
       current_client.request(:create) do |xml|
         xml.__send__(zns, :zObjects, 'xsi:type' => "#{ons}:#{remote_name}") do |a|
           @model.to_hash.each do |k,v|
-            a.__send__(ons, api_name(k), v) unless v.nil?
+            serialize(a, k.to_s.zuora_camelize.to_sym, convert_value(v)) unless v.nil?
           end
           generate_complex_objects(a, :create)
         end
@@ -43,6 +55,25 @@ module Zuora
       current_client.request(:delete) do |xml|
         xml.__send__(zns, :type, remote_name)
         xml.__send__(zns, :ids, id)
+      end
+    end
+
+    def amend(amend_options={})
+      current_client.request(:amend) do |xml|
+        xml.__send__(zns, :requests) do |r|
+          r.__send__(zns, :Amendments) do |a|
+            @model.to_hash.each do |k,v|
+              serialize(a, k.to_s.zuora_camelize.to_sym, convert_value(v)) unless v.nil?
+            end
+            generate_complex_objects(a, :create)
+          end
+
+          r.__send__(zns, :AmendOptions) do |ao|
+            amend_options.each do |k,v|
+              xml.__send__(zns, k.to_s.zuora_camelize.to_sym, convert_value(v)) unless v.nil?
+            end
+          end
+        end
       end
     end
 
@@ -125,6 +156,15 @@ module Zuora
 
     protected
 
+    # Zuora doesn't like the default string format of ruby dates/times
+    def convert_value(value)
+      if [Date, Time, DateTime].any? { |klass| value.is_a?(klass) }
+        value.strftime('%FT%T')
+      else
+        value
+      end
+    end
+    
     # generate complex objects for inclusion when creating and updating records
     def generate_complex_objects(builder, action)
       @model.complex_attributes.each do |var, scope|

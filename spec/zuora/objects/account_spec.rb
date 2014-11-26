@@ -154,7 +154,7 @@ describe Zuora::Objects::Account do
         a.payment_term = 'Due Upon Receipt'
         a.status = 'Draft'
         a.should be_valid
-        expect { a.save }.to raise_error Zuora::ApiFailure
+        expect { a.save }.to raise_error StandardError
         a.id.should be_nil
       end
     end

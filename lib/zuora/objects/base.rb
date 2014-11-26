@@ -175,7 +175,7 @@ module Zuora::Objects
         @changed_attributes.clear
         return true
       else
-        raise Zuora::ApiFailure.new result[:errors][:message]
+        raise StandardError.new(result[:errors][:message])
       end
     end
 

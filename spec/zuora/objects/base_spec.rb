@@ -32,7 +32,7 @@ describe Zuora::Objects::Base do
   describe :apply_response do
     context "when a failure" do
       it "raises an exception" do
-        expect { subject.send(:apply_response, { :foo => { :result => { :errors => { :message => 'Some error' } } } }, :foo )}.to raise_error Zuora::ApiFailure, 'Some error'
+        expect { subject.send(:apply_response, { :foo => { :result => { :errors => { :message => 'Some error' } } } }, :foo )}.to raise_error StandardError, 'Some error'
       end
     end
   end

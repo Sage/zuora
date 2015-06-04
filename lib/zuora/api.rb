@@ -109,9 +109,8 @@ module Zuora
       wsdl_path = if config && config.wsdl_path
                     config.wsdl_path
                   else
-                    File.expand_path('../../../wsdl/zuora.a.38.0.wsdl', __FILE__)
+                    File.expand_path('../../../wsdl/zuora.a.67.0.wsdl', __FILE__)
                   end
-
       @client = Savon::Client.new do
         wsdl.document =  wsdl_path
         http.auth.ssl.verify_mode = :none

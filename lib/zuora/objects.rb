@@ -3,6 +3,7 @@ module Zuora
     autoload :Base,                      'zuora/objects/base'
     autoload :Account,                   'zuora/objects/account'
     autoload :Amendment,                 'zuora/objects/amendment'
+    autoload :BillingPreview,            'zuora/objects/billing_preview'
     autoload :CommunicationProfile,      'zuora/objects/communication_profile'
     autoload :Contact,                   'zuora/objects/contact'
     autoload :Export,                    'zuora/objects/export'

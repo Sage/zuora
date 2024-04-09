@@ -3,6 +3,7 @@ module Zuora::Objects
     belongs_to :account
 
     validates_presence_of :first_name, :last_name
+    validates_presence_of :account_id, :unless => Proc.new { |contact| contact.new_record? }
     validates_length_of :first_name, :maximum => 100
     validates_length_of :last_name, :maximum => 100
     validates_length_of :nick_name, :maximum => 100, :allow_nil => true

@@ -13,11 +13,23 @@ module Zuora
       end
     end
 
+    def serialize(xml, key, value)
+      if value.kind_of?(Zuora::Objects::Base)
+        xml.__send__(zns, key.to_sym) do |child|
+          value.to_hash.each do |k, v|
+            serialize(child, k.to_s.zuora_camelize, convert_value(v)) unless v.nil?
+          end
+        end
+      else
+        xml.__send__(ons, key.to_sym, convert_value(value))
+      end
+    end
+
     def create
       current_client.request(:create) do |xml|
         xml.__send__(zns, :zObjects, 'xsi:type' => "#{ons}:#{remote_name}") do |a|
           @model.to_hash.each do |k,v|
-            a.__send__(ons, k.to_s.camelize.to_sym, v) unless v.nil?
+            serialize(a, k.to_s.zuora_camelize.to_sym, convert_value(v)) unless v.nil?
           end
           generate_complex_objects(a, :create)
         end
@@ -32,7 +44,7 @@ module Zuora
           a.__send__(ons, :Id, obj_id)
           change_syms = @model.changed.map(&:to_sym)
           obj_attrs.reject{|k,v| @model.read_only_attributes.include?(k) }.each do |k,v|
-            a.__send__(ons, k.to_s.camelize.to_sym, v) if change_syms.include?(k)
+            a.__send__(ons, k.to_s.zuora_camelize.to_sym, convert_value(v)) if change_syms.include?(k)
           end
           generate_complex_objects(a, :update)
         end
@@ -46,39 +58,14 @@ module Zuora
       end
     end
 
-    def subscribe
-      current_client.request(:subscribe) do |xml|
-        xml.__send__(zns, :subscribes) do |s|
-          s.__send__(zns, :Account) do |a|
-            generate_account(a)
-          end
-
-          s.__send__(zns, :PaymentMethod) do |pm|
-            generate_payment_method(pm)
-          end unless @model.payment_method.nil?
-
-          s.__send__(zns, :BillToContact) do |btc|
-            generate_bill_to_contact(btc)
-          end unless @model.bill_to_contact.nil?
-
-          s.__send__(zns, :SoldToContact) do |btc|
-            generate_sold_to_contact(btc)
-          end unless @model.sold_to_contact.nil?
-
-          s.__send__(zns, :SubscribeOptions) do |so|
-            generate_subscribe_options(so)
-          end unless @model.subscribe_options.blank?
-
-          s.__send__(zns, :SubscriptionData) do |sd|
-            sd.__send__(zns, :Subscription) do |sub|
-              generate_subscription(sub)
+    def amend
+      Zuora::Api.instance.request(:amend) do |xml|
+        xml.__send__(zns, :requests) do |r|
+          r.__send__(zns, :Amendments) do |a|
+            @model.to_hash.each do |k,v|
+              serialize(a, k.to_s.zuora_camelize.to_sym, convert_value(v)) unless v.nil?
             end
-
-            sd.__send__(zns, :RatePlanData) do |rpd|
-              rpd.__send__(zns, :RatePlan) do |rp|
-                rp.__send__(ons, :ProductRatePlanId, @model.product_rate_plan.id)
-              end
-            end
+            generate_complex_objects(a, :create)
           end
         end
       end
@@ -92,11 +79,11 @@ module Zuora
       # definitions, and only handles inline types.
       # This is a work in progress, and hopefully this
       # can be removed in the future via proper support.
-      tdefs = current_client.client.wsdl.type_definitions
+      tdefs = Zuora::Api.instance.wsdl.type_definitions
       klass = attrs['@xsi:type'.to_sym].base_name
       if klass
         attrs.each do |a,v|
-          ref = a.to_s.camelcase
+          ref = a.to_s.zuora_camelize
           z = tdefs.find{|d| d[0] == [klass, ref] }
           if z
             case z[1]
@@ -115,12 +102,27 @@ module Zuora
       attrs.delete_if {|k,v| !available.include?(k) }
     end
 
-    def current_client
-      Zuora::Api.instance
+    def generate
+      Zuora::Api.instance.request(:generate) do |xml|
+        xml.__send__(zns, :zObjects, 'xsi:type' => "#{ons}:#{remote_name}") do |a|
+          @model.to_hash.each do |k, v|
+            a.__send__(ons, k.to_s.zuora_camelize.to_sym, convert_value(v)) unless v.nil?
+          end
+        end
+      end
     end
 
     protected
 
+    # Zuora doesn't like the default string format of ruby dates/times
+    def convert_value(value)
+      if [Date, Time, DateTime].any? { |klass| value.is_a?(klass) }
+        value.strftime('%FT%T')
+      else
+        value
+      end
+    end
+ 
     # generate complex objects for inclusion when creating and updating records
     def generate_complex_objects(builder, action)
       @model.complex_attributes.each do |var, scope|
@@ -132,11 +134,12 @@ module Zuora
               case action
               when :create
                 object.to_hash.each do |k,v|
-                  td.__send__(ons, k.to_s.camelize.to_sym, v) unless v.nil?
+                  td.__send__(ons, k.to_s.zuora_camelize.to_sym, v) unless v.nil?
                 end
               when :update
-                object.to_hash.reject{|k,v| object.read_only_attributes.include?(k) || object.restrain_attributes.include?(k) }.each do |k,v|
-                  td.__send__(ons, k.to_s.camelize.to_sym, v) unless v.nil?
+                object.to_hash.reject{|k,v| object.read_only_attributes.include?(k) ||
+                                            object.restrain_attributes.include?(k) }.each do |k,v|
+                  td.__send__(ons, k.to_s.zuora_camelize.to_sym, v) unless v.nil?
                 end
               end
             end

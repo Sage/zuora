@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUNDLE_SAGEONEGEMS__JFROG__IO
+    image: sageone/zuora
+    container_name: zuora
+    environment:
+     - BUNDLE_SAGEONEGEMS__JFROG__IO
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - configs/default.env

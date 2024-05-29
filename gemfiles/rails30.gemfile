@@ -2,7 +2,7 @@
 
 source :rubygems
 
-gem "wasabi", :git=>"git://github.com/skiz/wasabi.git"
+gem "wasabi", :git=>"https://github.com/skiz/wasabi.git"
 gem "activesupport", "~> 3.0.0"
 gem "activemodel", "~> 3.0.0"
 

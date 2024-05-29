@@ -1,4 +1,4 @@
-require 'scanf'
+# require 'scanf'
 
 module Zuora
   class Version

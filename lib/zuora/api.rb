@@ -102,7 +102,5 @@ module Zuora
         http.auth.ssl.verify_mode = :none
       end
     end
-
   end
 end
-

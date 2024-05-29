@@ -5,6 +5,7 @@ describe "Account Management" do
   describe "given an account" do
 
     before :each do
+      allow_any_instance_of(Zuora::Api).to receive(:authenticated?).and_return(true)
       authenticate!
       @account = FactoryGirl.create(:account, :account_number => generate_key)
     end

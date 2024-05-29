@@ -1,19 +1,20 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Zuora::Objects::ProductRatePlanCharge do
-
-  describe "complex association support" do
-    it "should have blank association for new object" do
+  context 'complex association support' do
+    it 'should have blank association for new object' do
       subject.product_rate_plan_charge_tiers.should == []
     end
 
-    it "should allow adding objects to the association" do
-      obj = mock('Example')
+    it 'should allow adding objects to the association' do
+      obj = double('Example')
       subject.product_rate_plan_charge_tiers << obj
       subject.product_rate_plan_charge_tiers.should == [obj]
     end
 
-    it "should load remote associations when not a new record" do
+    it 'should load remote associations when not a new record' do
       subject.id = 'test'
       subject.should_not be_new_record
 
@@ -26,7 +27,7 @@ describe Zuora::Objects::ProductRatePlanCharge do
         with_value(/select .+ from ProductRatePlanChargeTier where ProductRatePlanChargeId = 'test'/)
     end
 
-    it "should not include complex attributes in the request" do
+    it 'should not include complex attributes in the request' do
       MockResponse.responds_with(:product_rate_plan_charge_tier_find_success) do
         subject.class.find('example')
       end
@@ -46,16 +47,16 @@ describe Zuora::Objects::ProductRatePlanCharge do
 
     @prpc = Zuora::Objects::ProductRatePlanCharge.new do |c|
       c.product_rate_plan = @prp
-      c.name = "Monthly Allowance"
+      c.name = 'Monthly Allowance'
       c.bill_cycle_type = 'DefaultFromCustomer'
-      c.billing_period = "Month"
-      c.billing_period_alignment = "AlignToCharge"
-      c.charge_model = "Volume Pricing"
-      c.charge_type = "Recurring"
-      c.included_units = "10"
+      c.billing_period = 'Month'
+      c.billing_period_alignment = 'AlignToCharge'
+      c.charge_model = 'Volume Pricing'
+      c.charge_type = 'Recurring'
+      c.included_units = '10'
       c.smoothing_model = 'Rollover'
       c.uom = 'Each'
-      c.trigger_event = "ServiceActivation"
+      c.trigger_event = 'ServiceActivation'
     end
 
     # new objects should have empty association
@@ -102,7 +103,7 @@ describe Zuora::Objects::ProductRatePlanCharge do
 
     @prpc.product_rate_plan_charge_tiers.first.price = 20
     @prpc.product_rate_plan_charge_tiers.first.price.should == 20 
-  
+
     MockResponse.responds_with(:product_rate_plan_charge_update_success) do
       @prpc.save.should == true
     end
@@ -116,7 +117,7 @@ describe Zuora::Objects::ProductRatePlanCharge do
     xml.should_not have_xml("//#{zns}:ProductRatePlanChargeTier/#{zns}:Id")
     xml.should_not have_xml("//#{zns}:ProductRatePlanChargeTier/#{ons}:StartingUnit")
     xml.should_not have_xml("//#{zns}:ProductRatePlanChargeTier/#{ons}:EndingUnit")
-    
+
     MockResponse.responds_with(:product_rate_plan_charge_destroy_success) do
       @prpc.destroy
     end

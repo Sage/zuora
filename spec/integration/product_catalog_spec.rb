@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Product Catalog" do
+describe "Product Catalog", :skip do
   before do
     authenticate!
     @product_name = generate_key

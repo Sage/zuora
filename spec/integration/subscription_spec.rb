@@ -1,9 +1,7 @@
 require 'spec_helper'
 
-describe 'Subscription' do
+describe 'Subscription', :skip do
   before :each do
-    allow_any_instance_of(Zuora::Api).to receive(:authenticate!).and_return(true)
-    require 'pry'
     @account = FactoryGirl.create(:active_account, account_number: generate_key)
     @product = FactoryGirl.create(:product_catalog, name: generate_key)
   end

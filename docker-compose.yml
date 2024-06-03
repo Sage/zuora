@@ -5,12 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - BUNDLE_SAGEONEGEMS__JFROG__IO
     image: sageone/zuora
     container_name: zuora
-    environment:
-     - BUNDLE_SAGEONEGEMS__JFROG__IO
     volumes:
       - .:/usr/src/app
     env_file:

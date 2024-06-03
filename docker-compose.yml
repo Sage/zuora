@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - RUBY_VERSION
     image: sageone/zuora
     container_name: zuora
     volumes:

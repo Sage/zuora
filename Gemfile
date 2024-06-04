@@ -1,6 +1,6 @@
 source :rubygems
 
-gem 'wasabi', :git => 'git://github.com/skiz/wasabi.git'
+gem 'wasabi', '2.3.0'
 
 gemspec
 

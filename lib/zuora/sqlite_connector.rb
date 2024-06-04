@@ -1,4 +1,5 @@
 require 'sqlite3'
+require 'csv'
 
 module Zuora
   #Sqlite3 in memoroy connector to simulate Zuora in test environments
@@ -9,7 +10,17 @@ module Zuora
       @model = model
     end
 
+    def download(export)
+      records = query(export.query)[:query_response][:result][:records]
+      CSV.generate do |csv|
+        records.each do |record|
+          csv << record.values
+        end
+      end
+    end
+
     def query(sql)
+      sql = sql.gsub /select .* from/, 'select * from'
       result = db.query sql
       hashed_result = result.map {|r| hash_result_row(r, result) }
       {
@@ -30,7 +41,7 @@ module Zuora
       keys = []
       values = []
       hash.each do |key, value|
-        keys << key.to_s.camelize
+        keys << @model.class.api_attr(key)
         values << value.to_s
       end
       place_holder = ['?'] * keys.length
@@ -49,6 +60,33 @@ module Zuora
       }
     end
 
+    #TODO Schema update needed for this method
+    def amend(options={})
+      table = self.class.table_name(@model.class)
+      hash = @model.to_hash
+      hash.delete(:id)
+      keys = []
+      values = []
+      hash.each do |key, value|
+        keys << @model.class.api_attr(key)
+        values << value.to_s
+      end
+      place_holder = ['?'] * keys.length
+      keys = keys.join(', ')
+      place_holder = place_holder.join(', ')
+      insert = "INSERT into '#{table}'(#{keys}) VALUES(#{place_holder})"
+      db.execute insert, values
+      new_id = db.last_insert_row_id
+      {
+          :create_response => {
+              :result => {
+                  :success => true,
+                  :id => new_id
+              }
+          }
+      }
+    end
+
     def update
       table  = self.class.table_name(@model.class)
       hash   = @model.to_hash
@@ -56,7 +94,7 @@ module Zuora
       keys   = []
       values = []
       hash.each do |key, value|
-        keys << "#{key.to_s.camelize}=?"
+        keys << "#{@model.class.api_attr(key)}=?"
         values << value.to_s
       end
       keys   = keys.join(', ')
@@ -87,6 +125,8 @@ module Zuora
     end
 
     def subscribe
+      @model.subscription.account = @model.account
+      @model.subscription.name = '12345'
       [
         :account,
         :subscription,
@@ -109,7 +149,8 @@ module Zuora
         :subscribe_response => {
           :result => {
             :success => true,
-            :id => nil
+            :id => nil,
+            :subscription_number => '12345'
           }
         }
       }
@@ -135,7 +176,7 @@ module Zuora
     protected
 
     def hash_result_row(row, result)
-      row = row.map {|r| r.nil? ? "" : r }
+      row = row.map {|r| r == "" ? nil : r }
       Hash[result.columns.zip(row.to_a)]
     end
 
@@ -149,9 +190,9 @@ module Zuora
       table_name = self.table_name(model)
       attributes = model.attributes - [:id]
       attributes = attributes.map do |a|
-        "'#{a.to_s.camelize}' text"
+        "'#{model.api_attr(a)}' text"
       end
-      autoid = "'Id' integer primary key"
+      autoid = "'Id' integer primary key autoincrement"
       attributes.unshift autoid
       attributes = attributes.join(", ")
       schema = "CREATE TABLE 'main'.'#{table_name}' (#{attributes});"

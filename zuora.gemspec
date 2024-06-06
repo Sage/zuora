@@ -2,20 +2,7 @@
 
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-
-unless ENV['CI_BRANCH'].nil?
-  puts "CI Branch - #{ENV['CI_BRANCH']}"
-  version = ENV['CI_BRANCH']
-end
-
-if /^v/.match?(version.downcase)
-  version = version.dup
-  version.slice!(0)
-elsif /^build/.match?(version.downcase)
-  version = "0.0.0.#{ENV['CI_BRANCH']}"
-else
-  version = '0.0.0'
-end
+version = File.read(File.expand_path('ZUORA_VERSION', __dir__)).strip
 
 Gem::Specification.new do |s|
   s.name        = 'zuora'

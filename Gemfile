@@ -8,7 +8,9 @@ git 'https://github.com/skiz/wasabi.git' do
 end
 
 gem 'akami', '1.3.2'
+gem 'ffi', '1.16.3'
 gem 'nokogiri', '1.15.6'
+gem 'ruby3-backward-compatibility'
 
 group :development, :test do
   gem 'appraisal', '~> 0.4.1'

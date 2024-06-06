@@ -2,9 +2,10 @@ module Zuora
   module Objects
     autoload :Base,                      'zuora/objects/base'
     autoload :Account,                   'zuora/objects/account'
-    autoload :Contact,                   'zuora/objects/contact'
     autoload :Amendment,                 'zuora/objects/amendment'
     autoload :CommunicationProfile,      'zuora/objects/communication_profile'
+    autoload :Contact,                   'zuora/objects/contact'
+    autoload :Export,                    'zuora/objects/export'
     # autoload :CreditBalanceAdjustment,   'zuora/objects/credit_balance_adjustment'
     autoload :Invoice,                   'zuora/objects/invoice'
     autoload :InvoiceAdjustment,         'zuora/objects/invoice_adjustment'
@@ -23,6 +24,8 @@ module Zuora
     autoload :RatePlan,                  'zuora/objects/rate_plan'
     autoload :RatePlanCharge,            'zuora/objects/rate_plan_charge'
     autoload :RatePlanChargeTier,        'zuora/objects/rate_plan_charge_tier'
+    autoload :RatePlanData,              'zuora/objects/rate_plan_data'
+    autoload :RatePlanChargeData,        'zuora/objects/rate_plan_charge_data'
     # autoload :Refund,                    'zuora/objects/refund'
   end
 end

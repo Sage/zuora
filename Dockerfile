@@ -12,6 +12,7 @@ RUN mkdir -p $APP_HOME
 WORKDIR $APP_HOME
 
 COPY zuora.gemspec \
+     ZUORA_VERSION \
      Gemfile \
      $APP_HOME
 

@@ -4,7 +4,16 @@ require 'spec_helper'
 require 'zuora/sqlite_connector'
 
 describe Zuora::SqliteConnector do
-  context 'build_schema' do
+  around :each do |example|
+    Zuora::Objects::Base.connector_class, old = described_class,
+      Zuora::Objects::Base.connector_class
+
+    example.run
+
+    Zuora::Objects::Base.connector_class = old
+  end
+
+  describe ':build_schema' do
     before :each do
       mod = Zuora::Objects
       @models = mod.constants.select { |x| mod.const_defined?(x) && mod.const_get(x) < mod::Base }.map { |x| mod.const_get(x) }
@@ -15,7 +24,8 @@ describe Zuora::SqliteConnector do
 
     it 'builds a table schema for all Zuora::Object::Base classes' do
       result = @db.execute "SELECT t.sql sql FROM 'main'.sqlite_master t WHERE t.type='table'"
-      result.length.should == @models.length
+      sys_tables = 1
+      result.length.should == @models.length + sys_tables
     end
 
     it 'creates a column for each attribute' do
@@ -26,6 +36,20 @@ describe Zuora::SqliteConnector do
         camel_attrs = m.attributes.map { |a| a.to_s.camelize }
         (camel_attrs - columns).should == []
       end
+    end
+
+    it "creates the correct column for custom attributes" do
+      model = @models.first
+      model.stub(:attributes).and_return([:api_service_id__c])
+
+      described_class.build_schema
+      @db = described_class.db
+
+      table_name = described_class.table_name(model)
+      table = @db.table_info(table_name)
+      columns = table.map {|t| t["name"] }
+
+      columns.should include 'ApiServiceId__c'
     end
   end
 
@@ -38,7 +62,7 @@ describe Zuora::SqliteConnector do
       Zuora::Objects::Base.connector_class = old_class
     end
 
-    context 'where' do
+    describe "Arel like methods" do
       before :each do
         @model = Zuora::Objects::Product
         @db = described_class.db
@@ -49,14 +73,26 @@ describe Zuora::SqliteConnector do
         @product2.create
       end
 
-      it 'returns matching records' do
-        records = @model.where(name: 'Product One')
-        records.first.name.should == @product1.name
-        records.first.id.should == @product1.id
+      describe 'where' do
+        it "returns matching records" do
+          records = @model.where(:name => 'Product One')
+          records.first.name.should == @product1.name
+          records.first.id.should == @product1.id
+        end
+      end
+
+      describe 'select' do
+        it "returns only selected fields" do
+          records = @model.select([:id, :name]).where(:name => 'Product One')
+          records.first.name.should == @product1.name
+          records.first.id.should == @product1.id
+          records.first.description.should == nil
+        end
       end
     end
 
-    context 'create' do
+
+    describe 'create' do
       before :each do
         @model = Zuora::Objects::Product.new
         @model.name = 'A Product'
@@ -151,4 +187,28 @@ describe Zuora::SqliteConnector do
       end
     end
   end
+
+  describe 'download' do
+    subject { described_class.new(nil) }
+
+    before :each do
+      acc1 = ::Zuora::Objects::Account.new
+      acc1.name = 'FOO'
+      acc1.status = 'Completed'
+      acc1.create
+
+      acc2 = ::Zuora::Objects::Account.new
+      acc2.name = 'BAR'
+      acc2.status = 'Draft'
+      acc2.create
+
+      @export = ::Zuora::Objects::Export.new
+      @export.query = 'SELECT Account.Name, Account.Status FROM Account'
+    end
+
+    it 'performs the query and returns the output as CSV' do
+      subject.download(@export).should == "FOO,Completed\nBAR,Draft\n"
+    end
+  end
+
 end

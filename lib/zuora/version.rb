@@ -1,5 +1,3 @@
-# require 'scanf'
-
 module Zuora
   class Version
     MAJOR = 0

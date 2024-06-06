@@ -1,4 +1,5 @@
 require 'savon'
+require 'net/http'
 
 module Zuora
 
@@ -65,6 +66,20 @@ module Zuora
 
     rescue Savon::SOAP::Fault, IOError => e
       raise Zuora::Fault.new(:message => e.message)
+    end
+
+    def download(export)
+      authenticate! unless authenticated?
+
+      uri = URI(URI.join(config.download_url, export.file_id))
+      req = Net::HTTP::Get.new(uri.request_uri)
+      req['Authorization'] = 'ZSession ' + session.try(:key)
+
+      http = Net::HTTP.new(uri.hostname, uri.port)
+      http.use_ssl = true
+
+      res = http.start { |http| http.request(req) }
+      res.body
     end
 
     # Attempt to authenticate against Zuora and initialize the Zuora::Session object

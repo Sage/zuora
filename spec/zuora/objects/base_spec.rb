@@ -10,7 +10,7 @@ class SomeExampleConnector
 end
 
 describe Zuora::Objects::Base do
-  describe ':connector' do
+  describe 'connector' do
     it 'uses SoapConnector by default' do
       SomeExampleObject.connector.should be_a Zuora::SoapConnector
     end
@@ -23,10 +23,19 @@ describe Zuora::Objects::Base do
     end
   end
 
-  describe ':initializer' do
+  describe 'initializer' do
     it 'allows to overwrite default values' do
       expect(Zuora::Objects::Invoice.new.includes_usage).to be_truthy
       expect(Zuora::Objects::Invoice.new(includes_usage: false).includes_usage).to be_falsy
+    end
+  end
+
+  describe 'apply_response' do
+    context 'when a failure' do
+      it 'raises an exception' do
+        expect { subject.send(:apply_response, { foo: { result: { errors: { message: 'Some error' } } } }, :foo) }
+          .to raise_error StandardError, 'Some error'
+      end
     end
   end
 end

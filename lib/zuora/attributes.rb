@@ -125,6 +125,14 @@ module Zuora
         class_variable_get(:@@all_attributes).map(&:to_sym)
       end
 
+      def api_attr(lower)
+        if lower =~ /__c$/
+          lower.to_s[0..-4].camelize + '__c'
+        else
+          lower.to_s.camelize
+        end
+      end
+
       # the name to use when referencing remote Zuora objects
       def remote_name
         self.name.base_name
@@ -137,7 +145,7 @@ module Zuora
         xpath = "//xs:complexType[@name='#{subclass.remote_name}']//xs:sequence/xs:element"
         document = Zuora::Api.instance.client.wsdl.parser.instance_variable_get('@document')
         q = document.xpath(xpath, 's0' => 'http://schemas.xmlsoap.org/wsdl/', 'xs' => 'http://www.w3.org/2001/XMLSchema')
-        wsdl_attrs = (q.map{|e| e.attributes['name'].value.underscore.to_sym }) << :id
+        wsdl_attrs = (q.map{|e| e.attributes['name'].to_s.underscore.to_sym }) << :id
         subclass.send(:class_variable_set, :@@wsdl_attributes,  wsdl_attrs)
         subclass.send(:class_variable_set, :@@read_only_attributes, [])
         subclass.send(:class_variable_set, :@@default_attributes, {})

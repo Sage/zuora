@@ -1,16 +1,8 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
-# source :rubygems
 
 gemspec
-
-git 'https://github.com/skiz/wasabi.git' do
-  gem 'wasabi'
-end
-
-gem 'akami', '1.3.2'
-gem 'ffi', '1.16.3'
-gem 'nokogiri', '1.15.6'
-gem 'ruby3-backward-compatibility'
 
 group :development, :test do
   gem 'appraisal', '~> 0.4.1'
@@ -23,6 +15,7 @@ group :development, :test do
   gem 'rake', '~> 0.8.7'
   gem 'redcarpet', '~> 2.1.0'
   gem 'rspec', '~> 3.0'
+  gem 'simplecov', '~> 0.6.4'
   gem 'sqlite3', '~> 1.3.0'
   gem 'test-unit'
   gem 'yard', '~> 0.7.5'

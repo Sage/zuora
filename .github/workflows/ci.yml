@@ -24,19 +24,29 @@ jobs:
       - name: Tests
         run: 'bundle exec rspec spec --force-color --format doc'
 
-  publish:
+  release:
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/tags/build-')
     runs-on: ubuntu-latest
-
+    env:
+      GEMS_PATH: "pkg/*.gem"
+      RUBYGEMS_HOST: "${{ secrets.RUBYGEMS_HOST }}"
+      JFROG_USER: "${{ secrets.JFROG_USER }}"
+      JFROG_PASS: "${{ secrets.JFROG_PASS }}"
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Publish to RubyGems
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7'
+          bundler-cache: true
+      - name: Clear any existing packages
+        run: rm -f $GEMS_PATH
+      - name: Retrieve credentials
         run: |
           mkdir -p $HOME/.gem
-          touch $HOME/.gem/credentials
-          chmod 0600 $HOME/.gem/credentials
-          printf -- "---\n:rubygems_api_key: ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
-          gem build zuora.gemspec
-          gem push zuora-*.gem
-        env:
-          GEM_HOST_API_KEY: "${{secrets.RUBYGEMS_AUTH_TOKEN}}"
+          curl -u $JFROG_USER:$JFROG_PASS $RUBYGEMS_HOST/api/v1/api_key.yaml > $HOME/.gem/credentials
+          chmod 600 $HOME/.gem/credentials
+      - name: Build gem
+        run: bundle exec rake build zuora.gemspec
+      - name: Publish
+        run: gem push $GEMS_PATH

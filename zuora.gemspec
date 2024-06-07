@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
-lib = File.expand_path('lib', __dir__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-version = File.read(File.expand_path('ZUORA_VERSION', __dir__)).strip
+$:.push File.expand_path('../lib', __FILE__)
+require 'zuora/version'
 
 Gem::Specification.new do |s|
   s.name        = 'zuora'
-  s.version     = version
+  s.version     = Zuora::Version.to_s
   s.authors     = ['Josh Martin']
   s.email       = ['josh.martin@wildfireapp.com']
   s.summary     = 'Zuora - ActiveModel backed client for the Zuora API'

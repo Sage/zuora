@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'Subscription', :skip do
   before :each do
+    authenticate!
     @account = FactoryGirl.create(:active_account, account_number: generate_key)
     @product = FactoryGirl.create(:product_catalog, name: generate_key)
   end

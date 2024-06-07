@@ -9,10 +9,12 @@ RUN apk --update add --no-cache build-base bash && \
 
 ENV APP_HOME /usr/src/app/
 RUN mkdir -p $APP_HOME
+RUN mkdir $APP_HOMElib/zuora/
 WORKDIR $APP_HOME
 
+COPY /lib/zuora/version.rb $APP_HOME/lib/zuora/
+
 COPY zuora.gemspec \
-     ZUORA_VERSION \
      Gemfile \
      $APP_HOME
 

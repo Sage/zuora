@@ -22,12 +22,9 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'activemodel', '< 5.0.0'
   s.add_dependency 'activesupport', '< 5.0.0'
-  s.add_dependency 'akami', '1.3.2'
-  s.add_dependency 'ffi', '1.16.3'
   s.add_dependency 'httpi', '~> 1.0'
   s.add_dependency 'libxml4r', '~> 0.2.6'
   s.add_dependency 'nokogiri', '~> 1.15.6'
-  s.add_dependency 'ruby3-backward-compatibility'
   s.add_dependency 'savon', '~> 0.9.12'
   s.add_dependency 'wasabi', '2.3.0'
 end

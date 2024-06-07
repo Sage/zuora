@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Subscription', :skip do
+describe 'Subscription', type: :integration do
   before :each do
     authenticate!
     @account = FactoryGirl.create(:active_account, account_number: generate_key)

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Product Catalog", :skip do
+describe "Product Catalog", type: :integration do
   before do
     authenticate!
     @product_name = generate_key

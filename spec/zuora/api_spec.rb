@@ -22,7 +22,7 @@ describe Zuora::Api do
     end
   end
 
-  describe "logger support", :skip do
+  describe "logger support", type: :integration do
     it "allows using custom logger" do
       MockResponse.responds_with(:valid_login) do
         logger = Logger.new('zuora.log')
@@ -32,7 +32,7 @@ describe Zuora::Api do
     end
   end
 
-  describe "authentication", :skip do
+  describe "authentication", type: :integration do
     it "creates Zuora::Session instance when successful" do
       MockResponse.responds_with(:valid_login) do
         Zuora.configure(:username => 'example', :password => 'test')
@@ -59,7 +59,7 @@ describe Zuora::Api do
     end
   end
 
-  describe 'download', :skip do
+  describe 'download', type: :integration do
     it "uses NET::HTTP to download the csv" do
       Zuora.configure(
         :username => 'example',

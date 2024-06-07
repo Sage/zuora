@@ -18,7 +18,7 @@ jobs:
         run: cat configs/default.env >> $GITHUB_ENV
 
       - name: Tests
-        run: 'bundle exec rspec spec --force-color --format doc'
+        run: 'bundle exec rspec -t ~type:integration --force-color --format doc'
 
   release:
     needs: test

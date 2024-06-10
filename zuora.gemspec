@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('savon', ["0.9.9"])
   s.add_runtime_dependency('activesupport', [">= 3.0.0", "< 5.0.0"])
   s.add_runtime_dependency('activemodel', [">= 3.0.0", "< 5.0.0"])
-  s.add_runtime_dependency('httpi', ["0.9.7"])
+  s.add_runtime_dependency('httpi')
   s.add_runtime_dependency('libxml4r', ['~> 0.2.6'])
 
   s.add_development_dependency('rake', ["~> 0.8.7"])

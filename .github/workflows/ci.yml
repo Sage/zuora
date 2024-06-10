@@ -1,0 +1,48 @@
+name: CI
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7'
+          bundler-cache: true
+
+      - name: Export ENV
+        run: cat configs/default.env >> $GITHUB_ENV
+
+      - name: Tests
+        run: 'bundle exec rspec -t ~type:integration --force-color --format doc'
+
+  release:
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/tags/build-')
+    runs-on: ubuntu-latest
+    env:
+      GEMS_PATH: "pkg/*.gem"
+      RUBYGEMS_HOST: "${{ secrets.RUBYGEMS_HOST }}"
+      JFROG_USER: "${{ secrets.JFROG_USER }}"
+      JFROG_PASS: "${{ secrets.JFROG_PASS }}"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7'
+          bundler-cache: true
+      - name: Clear any existing packages
+        run: rm -f $GEMS_PATH
+      - name: Retrieve credentials
+        run: |
+          mkdir -p $HOME/.gem
+          curl -u $JFROG_USER:$JFROG_PASS $RUBYGEMS_HOST/api/v1/api_key.yaml > $HOME/.gem/credentials
+          chmod 600 $HOME/.gem/credentials
+      - name: Build gem
+        run: bundle exec rake build zuora.gemspec
+      - name: Publish
+        run: gem push $GEMS_PATH

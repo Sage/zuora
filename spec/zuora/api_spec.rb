@@ -21,8 +21,8 @@ describe Zuora::Api do
       Zuora::Api.instance.config.password.should == 'changed'
     end
   end
-  
-  describe "logger support" do
+
+  describe "logger support", type: :integration do
     it "allows using custom logger" do
       MockResponse.responds_with(:valid_login) do
         logger = Logger.new('zuora.log')
@@ -32,7 +32,7 @@ describe Zuora::Api do
     end
   end
 
-  describe "authentication" do
+  describe "authentication", type: :integration do
     it "creates Zuora::Session instance when successful" do
       MockResponse.responds_with(:valid_login) do
         Zuora.configure(:username => 'example', :password => 'test')
@@ -59,7 +59,7 @@ describe Zuora::Api do
     end
   end
 
-  describe :download do
+  describe 'download', type: :integration do
     it "uses NET::HTTP to download the csv" do
       Zuora.configure(
         :username => 'example',
@@ -70,7 +70,7 @@ describe Zuora::Api do
       export = ::Zuora::Objects::Export.new
       export.file_id = 'FOOBAR_FILE'
 
-      Net::HTTP.any_instance.should_receive(:start).and_return(mock(Object, :body => ''))
+      Net::HTTP.any_instance.should_receive(:start).and_return(double(Object, :body => ''))
 
       subject.download(export)
     end

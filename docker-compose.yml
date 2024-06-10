@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - RUBY_VERSION
+    image: sageone/zuora
+    container_name: zuora
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - configs/default.env

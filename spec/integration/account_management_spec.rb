@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Account Management" do
+describe "Account Management", type: :integration do
 
   describe "given an account" do
 

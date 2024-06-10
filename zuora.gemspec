@@ -20,14 +20,10 @@ Gem::Specification.new do |s|
   s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.extra_rdoc_files = ['README.md']
 
-  s.add_development_dependency 'akami', '<= 1.3.2'
-  s.add_development_dependency 'appraisal', '~> 0.4.1'
   s.add_development_dependency 'artifice', '~> 0.6.0'
   s.add_development_dependency 'bigdecimal', '< 2.0.0'
   s.add_development_dependency 'factory_girl', '~> 2.6.4'
-  s.add_development_dependency 'ffi', '<= 1.16.3'
   s.add_development_dependency 'guard-rspec', '~> 0.6.0'
-  s.add_development_dependency 'nokogiri', '~> 1.15.6'
   s.add_development_dependency 'pry'
   s.add_development_dependency 'pry-nav'
   s.add_development_dependency 'rake', '~> 0.8.7'
@@ -36,7 +32,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'simplecov', '~> 0.6.4'
   s.add_development_dependency 'sqlite3', '~> 1.3.0'
   s.add_development_dependency 'test-unit'
-  s.add_development_dependency 'wasabi', '2.3.0'
   s.add_development_dependency 'yard', '~> 0.7.5'
 
   s.add_dependency 'activemodel', '< 5.0.0'

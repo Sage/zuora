@@ -7,6 +7,9 @@ RUN apk --update add --no-cache build-base bash && \
   apk add --no-cache libxml2-dev && \
   apk add --no-cache sqlite-dev
 
+RUN gem update --system 3.3.22 --no-document && \
+  gem install bundler --no-document
+
 ENV APP_HOME /usr/src/app/
 RUN mkdir -p $APP_HOME
 RUN mkdir $APP_HOMElib/zuora/

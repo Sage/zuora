@@ -10,12 +10,14 @@ module Zuora
   # @param [Hash] configuration option hash
   # @return [Config]
   def self.configure(opts={})
-    Api.instance.config = Config.new(opts)
+    zuora_config = Zuora::Config.new(opts)
+    Api.instance.config = zuora_config
     HTTPI.logger = opts[:logger]
-    HTTPI.log = opts[:logger] ? true : false
-    Savon.configure do |savon|
-      savon.logger = opts[:logger]
-      savon.log = opts[:logger] ? true : false
+    logger_enabled = opts[:logger] ? true : false
+
+    Savon::Client.new(wsdl: zuora_config.wsdl_path, namespace: 'http://api.zuora.com/') do |config|
+      config.logger opts[:logger]
+      config.log logger_enabled
     end
   end
 
@@ -102,19 +104,23 @@ module Zuora
     def client
       return @client if @client
 
-      Savon.configure do |savon|
-        savon.soap_version = 2
-      end
-
       wsdl_path = if config && config.wsdl_path
                     config.wsdl_path
                   else
                     File.expand_path('../../../wsdl/zuora.a.38.0.wsdl', __FILE__)
                   end
 
-      @client = Savon::Client.new do
-        wsdl.document =  wsdl_path
-        http.auth.ssl.verify_mode = :none
+      # This is the original code that was replaced by the below above
+      # I need to check how to set document
+
+      # @client = Savon::Client.new do
+      #   wsdl.document =  wsdl_path
+      #   http.auth.ssl.verify_mode = :none
+      # end
+
+      @client = Savon::Client.new(wsdl: wsdl_path, namespace: 'http://api.zuora.com/') do |config|
+        config.soap_version 2
+        config.ssl_verify_mode :none
       end
     end
   end

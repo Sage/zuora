@@ -9,10 +9,14 @@ module Zuora::Objects
     # generate a new instance of a Zuora object
     def initialize(attrs={}, &block)
       apply_default_attributes
+      self.attributes = attrs
+      yield self if block_given?
+    end
+
+    def attributes=(attrs={})
       attrs.each do |name, value|
         self.send("#{name.to_s.underscore}=", value)
       end
-      yield self if block_given?
     end
 
     # given a soap response hash, initialize a record
@@ -51,7 +55,7 @@ module Zuora::Objects
     end
 
     def self.namespace(uri)
-      connector.current_client.client.soap.namespace_by_uri(uri)
+      Zuora::Api.instance.client.operation(:query).build.send(:namespace_by_uri, uri)
     end
 
     def self.zns
@@ -76,6 +80,16 @@ module Zuora::Objects
       self
     end
 
+    # retrieve all of the records
+    def self.all
+      keys = (attributes - unselectable_attributes).map(&:to_s).map(&:zuora_camelize)
+      sql = "select #{keys.join(', ')} from #{remote_name}"
+ 
+      result = self.connector.query(sql)
+ 
+      generate(result.to_hash, :query_response)
+    end
+
     # locate objects using a custom where clause, currently arel
     # is not supported as it requires an actual db connection to
     # generate the sql queries. This may be overcome in the future.
@@ -83,7 +97,7 @@ module Zuora::Objects
       keys = self.select_attributes
       if where.is_a?(Hash)
         # FIXME: improper inject usage.
-        where = where.inject([]){|t,v| t << "#{v[0].to_s.camelcase} = '#{v[1]}'"}.sort.join(' and ')
+        where = where.inject([]){|t,v| t << "#{v[0].to_s.zuora_camelize} = '#{v[1]}'"}.sort.join(' and ')
       end
       sql = "select #{keys.join(', ')} from #{remote_name} where #{where}"
 
@@ -91,6 +105,11 @@ module Zuora::Objects
 
       # reset @select after query to not propagate value for next queries
       @select = []
+      generate(result.to_hash, :query_response)
+    end
+
+    def self.query(query_string)
+      result = self.connector.query(query_string)
       generate(result.to_hash, :query_response)
     end
 

@@ -143,7 +143,7 @@ module Zuora
       def inherited(subclass)
         super
         xpath = "//xs:complexType[@name='#{subclass.remote_name}']//xs:sequence/xs:element"
-        document = Zuora::Api.instance.client.wsdl.parser.instance_variable_get('@document')
+        document = Zuora::Api.instance.wsdl.parser.instance_variable_get('@document')
         q = document.xpath(xpath, 's0' => 'http://schemas.xmlsoap.org/wsdl/', 'xs' => 'http://www.w3.org/2001/XMLSchema')
         wsdl_attrs = (q.map{|e| e.attributes['name'].to_s.underscore.to_sym }) << :id
         subclass.send(:class_variable_set, :@@wsdl_attributes,  wsdl_attrs)
@@ -212,7 +212,7 @@ module Zuora
       @changed_attributes = {}
       self
     end
-    
+
     # the name to use when referencing remote Zuora objects
     def remote_name
       self.class.name.base_name

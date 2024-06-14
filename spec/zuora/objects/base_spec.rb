@@ -37,5 +37,17 @@ describe Zuora::Objects::Base do
           .to raise_error StandardError, 'Some error'
       end
     end
+
+    it "assigns attributes from passed in hash" do
+      Zuora::Objects::Account.new(:name => "Test Name").name.should == "Test Name"
+    end
+  end
+
+  describe "attributes=" do
+    it "should assign attributes to an existing instance from passed in hash" do
+      account = Zuora::Objects::Account.new(:name => "Test Name")
+      account.attributes = {:name => "New Name"}
+      account.name.should == "New Name"
+    end
   end
 end

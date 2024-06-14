@@ -3,6 +3,7 @@ FROM ruby:${RUBY_VERSION}-alpine
 
 RUN apk --update add --no-cache build-base bash && \
   apk add git && \
+  apk add --no-cache libffi-dev && \
   apk add --no-cache libxml2 && \
   apk add --no-cache libxml2-dev && \
   apk add --no-cache sqlite-dev

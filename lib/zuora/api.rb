@@ -1,6 +1,5 @@
-require 'net/http'
-require 'singleton'
 require 'savon'
+require 'net/http'
 
 module Zuora
 
@@ -20,8 +19,6 @@ module Zuora
   end
 
   class Api
-    include Singleton
-
     I18n.enforce_available_locales = false
 
     # @return [Savon::Client]
@@ -45,6 +42,10 @@ module Zuora
 
     def wsdl
       client.instance_variable_get(:@wsdl)
+    end
+
+    def self.instance
+      @instance ||= new
     end
 
     # Is this an authenticated session?

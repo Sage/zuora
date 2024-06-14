@@ -5,7 +5,7 @@ module Zuora::Objects
     attr_accessor :bill_to_contact
     attr_accessor :payment_method
     attr_accessor :sold_to_contact
-    attr_accessor :product_rate_plans
+    attr_accessor :product_rate_plan
 
     store_accessors :subscribe_options
     store_accessors :preview_options
@@ -14,7 +14,7 @@ module Zuora::Objects
       request.must_have_usable(:account)
       request.must_have_usable(:payment_method)
       request.must_have_usable(:bill_to_contact)
-      request.must_have_usable(:product_rate_plans)
+      request.must_have_usable(:product_rate_plan)
       request.must_have_new(:subscription)
     end
 
@@ -43,12 +43,6 @@ module Zuora::Objects
       # return false unless valid?
       result = connector.subscribe
       apply_response(result.to_hash, :subscribe_response)
-    end
-
-    # method to support backward compatibility of a single
-    # product_rate_plan
-    def product_rate_plan=(rate_plan_object)
-      self.product_rate_plans = [rate_plan_object]
     end
 
     protected

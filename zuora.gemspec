@@ -38,5 +38,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'activesupport', '< 5.0.0'
   s.add_dependency 'httpi', '3.0'
   s.add_dependency 'libxml4r', '~> 0.2.6'
-  s.add_dependency 'savon', '2.15.0'
+  s.add_dependency 'savon', '2.14.0'
 end

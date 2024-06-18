@@ -1,4 +1,4 @@
-ARG RUBY_VERSION=${RUBY_VERSION:-3.2}
+ARG RUBY_VERSION=${RUBY_VERSION:-3.2.0}
 FROM ruby:${RUBY_VERSION}-alpine
 
 RUN apk --update add --no-cache build-base bash && \

@@ -20,6 +20,12 @@ Gem::Specification.new do |s|
   s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.extra_rdoc_files = ['README.md']
 
+  s.add_dependency 'activemodel', '~> 5.0.7'
+  s.add_dependency 'activesupport', '~> 5.0.7'
+  s.add_dependency 'httpi', '~> 4.0.2'
+  s.add_dependency 'i18n', '~> 1.5.1'
+  s.add_dependency 'libxml4r', '~> 0.2.6'
+  s.add_dependency 'savon', '~> 2.15.0'
   s.add_development_dependency 'artifice', '~> 0.6.0'
   s.add_development_dependency 'bigdecimal', '~> 3.0.0'
   s.add_development_dependency 'factory_girl', '~> 2.6.4'
@@ -33,9 +39,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'sqlite3', '~> 2.0'
   s.add_development_dependency 'test-unit'
   s.add_development_dependency 'yard', '~> 0.7.5'
-  s.add_dependency 'activemodel', '~> 5.0.0'
-  s.add_dependency 'activesupport', '~> 5.0.0'
-  s.add_dependency 'httpi', '~> 4.0.2'
-  s.add_dependency 'libxml4r', '~> 0.2.6'
-  s.add_dependency 'savon', '~> 2.15.0'
 end

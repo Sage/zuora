@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'activemodel', '~> 5.0.7'
   s.add_dependency 'activesupport', '~> 5.0.7'
-  s.add_dependency 'httpi', '~> 4.0.2'
+  s.add_dependency 'httpi'
   s.add_dependency 'i18n', '~> 1.5.1'
   s.add_dependency 'libxml4r', '~> 0.2.6'
   s.add_dependency 'savon', '~> 2.15.0'

@@ -21,8 +21,8 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = ['README.md']
 
   s.add_dependency 'activemodel', '>= 4.2.11'
-  s.add_dependency 'activesupport', '>= 4.2.11'
-  s.add_dependency 'httpi', '~> 4.0.2'
+  # s.add_dependency 'activesupport', '>= 4.2.11'
+  # s.add_dependency 'httpi', '~> 4.0.2'
   s.add_dependency 'i18n', '~> 0.7'
   s.add_dependency 'libxml4r', '~> 0.2.6'
   s.add_dependency 'savon', '~> 2.15.0'
@@ -37,7 +37,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'redcarpet', '~> 2.1.0'
   s.add_development_dependency 'rspec', '~> 3.0'
   s.add_development_dependency 'simplecov', '~> 0.22.0'
-  s.add_development_dependency 'sqlite3', '~> 2.0'
+  s.add_development_dependency 'sqlite3', '~> 1.3'
   s.add_development_dependency 'test-unit'
   s.add_development_dependency 'yard', '~> 0.7.5'
 end

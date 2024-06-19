@@ -9,29 +9,29 @@ describe Zuora::Objects::PaymentMethod do
 
   context 'Type helpers' do
     it 'supports credit_card?' do
-      FactoryGirl.build(:payment_method_credit_card).should be_credit_card
+      FactoryBot.build(:payment_method_credit_card).should be_credit_card
     end
 
     it 'supports ach?' do
-      FactoryGirl.build(:payment_method_ach).should be_ach
+      FactoryBot.build(:payment_method_ach).should be_ach
     end
 
     it 'supports paypal?' do
-      FactoryGirl.build(:payment_method_paypal).should be_paypal
+      FactoryBot.build(:payment_method_paypal).should be_paypal
     end
 
     it 'supports debit_card?' do
-      FactoryGirl.build(:payment_method_debit_card).should be_debit_card
+      FactoryBot.build(:payment_method_debit_card).should be_debit_card
     end
 
     it 'supports card?' do
-      FactoryGirl.build(:payment_method_credit_card).should be_card
-      FactoryGirl.build(:payment_method_debit_card).should be_card
+      FactoryBot.build(:payment_method_credit_card).should be_card
+      FactoryBot.build(:payment_method_debit_card).should be_card
     end
   end
 
   context 'write only attributes' do
-    ach = FactoryGirl.build(:payment_method_ach)
+    ach = FactoryBot.build(:payment_method_ach)
     ach.write_only_attributes.should == [:ach_account_number, :credit_card_number,
       :credit_card_security_code, :gateway_option_data, :skip_validation, :bank_transfer_account_number]
   end
@@ -62,7 +62,7 @@ describe Zuora::Objects::PaymentMethod do
   describe "Credit Card" do
     it "generates proper request xml" do
       MockResponse.responds_with(:payment_method_credit_card_create_success) do
-        FactoryGirl.create(:payment_method_credit_card, :account => @account, credit_card_expiration_year: '2025')
+        FactoryBot.create(:payment_method_credit_card, :account => @account, credit_card_expiration_year: '2025')
 
         xml = Zuora::Api.instance.last_request
         xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:Type").
@@ -99,7 +99,7 @@ describe Zuora::Objects::PaymentMethod do
   context 'ACH' do
     it 'generates proper request xml' do
       MockResponse.responds_with(:payment_method_ach_create_success) do
-        FactoryGirl.create(:payment_method_ach, account: @account)
+        FactoryBot.create(:payment_method_ach, account: @account)
 
         xml = Zuora::Api.instance.last_request
         xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:Type")
@@ -128,7 +128,7 @@ describe Zuora::Objects::PaymentMethod do
   context 'PayPal' do
     it 'generates proper request xml' do
       MockResponse.responds_with(:payment_method_ach_create_success) do
-        FactoryGirl.create(:payment_method_paypal, account: @account)
+        FactoryBot.create(:payment_method_paypal, account: @account)
 
         xml = Zuora::Api.instance.last_request
         xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:Type")

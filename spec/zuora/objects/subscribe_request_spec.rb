@@ -28,7 +28,7 @@ describe Zuora::Objects::SubscribeRequest do
         subject.product_rate_plan = Zuora::Objects::ProductRatePlan.find('stub')
       end
 
-      subject.subscription = FactoryGirl.build(:subscription)
+      subject.subscription = FactoryBot.build(:subscription)
     end
 
     it "provides properly formatted xml when using existing objects" do
@@ -52,7 +52,7 @@ describe Zuora::Objects::SubscribeRequest do
     end
 
     it "provides full account info when new object" do
-      subject.account = FactoryGirl.build(:account)
+      subject.account = FactoryBot.build(:account)
 
       MockResponse.responds_with(:subscribe_request_success) do
         subject.should be_valid
@@ -68,7 +68,7 @@ describe Zuora::Objects::SubscribeRequest do
     end
 
     it "provides full bill_to_contact info when new object" do
-      subject.bill_to_contact = FactoryGirl.build(:contact, :account => @account)
+      subject.bill_to_contact = FactoryBot.build(:contact, :account => @account)
 
       MockResponse.responds_with(:subscribe_request_success) do
         subject.should be_valid
@@ -83,7 +83,7 @@ describe Zuora::Objects::SubscribeRequest do
     end
 
     it "provides full payment_method info when new object" do
-      subject.payment_method = FactoryGirl.build(:payment_method_ach, :account => @account, :ach_account_name => 'Testing')
+      subject.payment_method = FactoryBot.build(:payment_method_ach, :account => @account, :ach_account_name => 'Testing')
 
       MockResponse.responds_with(:subscribe_request_success) do
         subject.should be_valid

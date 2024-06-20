@@ -41,7 +41,7 @@ jobs:
         run: cat configs/default.env >> $GITHUB_ENV
 
       - name: Tests
-        run: 'bundle exec rspec -t ~type:integration --force-color --format doc'
+        run: 'bundle exec appraisal rails-6 bundle exec rspec -t ~type:integration --force-color --format doc'
 
   release:
     needs: test

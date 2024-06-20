@@ -44,7 +44,8 @@ module Zuora::Objects
         self.send("#{k}=", v)
       }
       @previously_changed = changes
-      @changed_attributes.clear
+      # @changed_attributes = ActiveSupport::HashWithIndifferentAccess.new
+      clear_changes_information
       self
     end
 
@@ -84,9 +85,9 @@ module Zuora::Objects
     def self.all
       keys = (attributes - unselectable_attributes).map(&:to_s).map(&:zuora_camelize)
       sql = "select #{keys.join(', ')} from #{remote_name}"
- 
+
       result = self.connector.query(sql)
- 
+
       generate(result.to_hash, :query_response)
     end
 
@@ -191,7 +192,9 @@ module Zuora::Objects
       if result[:success]
         self.id = result[:id]
         @previously_changed = changes
-        @changed_attributes.clear
+        # require 'pry'; binding.pry
+        # @changed_attributes = ActiveSupport::HashWithIndifferentAccess.new
+        clear_changes_information
         return true
       else
         raise StandardError.new(result[:errors][:message])

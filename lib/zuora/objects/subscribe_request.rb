@@ -55,7 +55,8 @@ module Zuora::Objects
         subscription.name = result[:subscription_number]
         subscription.clear_changed_attributes!
         @previously_changed = changes
-        @changed_attributes.clear
+        # @changed_attributes = ActiveSupport::HashWithIndifferentAccess.new
+        clear_changes_information
       else
         self.errors.add(:base, result[:errors][:message])
       end

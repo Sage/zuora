@@ -36,7 +36,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'test-unit'
   s.add_development_dependency 'yard', '~> 0.7.5'
 
-  s.add_dependency 'activemodel', '< 5.0.0'
+  s.add_dependency 'activemodel'#, '< 5.0.0'
  # s.add_dependency 'activesupport', '< 5.0.0'
   s.add_dependency 'httpi', '~> 3.0'
   s.add_dependency 'rack', '< 3.0'

@@ -1,5 +1,11 @@
 module Zuora
   module Attributes
+
+    # If Rails 5.2 is used, alias_method_chain is required
+    if Gem.loaded_specs['activemodel'].version >= Gem::Version.new('5.2')
+      require 'alias_method_chain'
+    end
+
     def self.included(base)
       base.send(:include, ActiveModel::Naming)
       base.send(:include, ActiveModel::Conversion)
@@ -39,9 +45,6 @@ module Zuora
         # generate association overrides for complex object handling
         # and cache the objects so that they may be modified and updated
         class_variable_get(:@@complex_attributes).each do |var, scope|
-          # set up the instance variable for the new assoc collection
-          # for new records, but call the original one for existing
-          # records and cache/return the result for subsequent calls.
           class_eval <<-EVAL
             def #{scope}_with_complex
               if new_record? || @#{scope}_cached
@@ -52,6 +55,14 @@ module Zuora
               end
             end
             alias_method_chain :#{scope}, :complex
+
+            # if method_defined?(:#{scope})
+            #   prepend Module.new {
+            #     super
+            #     # alias_method :#{scope}_without_complex, :#{scope}
+            #     # alias_method :#{scope}, :#{scope}_with_complex
+            #   }
+            # end
           EVAL
         end
       end
@@ -209,8 +220,10 @@ module Zuora
 
     # remove all dirty tracking for the object and return self for chaining.
     def clear_changed_attributes!
-      @changed_attributes = {}
+      clear_changes_information
       self
+      # @changed_attributes = {}
+      # self
     end
 
     # the name to use when referencing remote Zuora objects

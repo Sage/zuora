@@ -42,7 +42,8 @@ module Zuora::Objects
         self.invoice_id = result[:invoice_id]
         self.payment_transaction_number = result[:payment_transaction_number]
         @previously_changed = changes
-        @changed_attributes.clear
+        # @changed_attributes.clear
+        clear_changes_information
         return true
       else
         self.errors.add(:base, result[:errors][:message])

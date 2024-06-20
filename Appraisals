@@ -3,10 +3,11 @@ appraise "rails-4" do
   gem 'bigdecimal', '~> 1.4'
 end
 
-# appraise "rails-5" do
-#   gem 'activemodel', '~> 5.0.7'
-#   gem 'bigdecimal'
-# end
+appraise "rails-5" do
+  gem 'activemodel', '~> 5.2'
+  gem 'bigdecimal'
+  gem 'alias_method_chain'
+end
 
 # appraise "rails-6" do
 #   gem 'activemodel', '~> 6.0.1'

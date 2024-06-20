@@ -8,6 +8,8 @@ require 'artifice'
 require 'digest/md5'
 require 'factory_bot'
 
+require 'pry-byebug'
+
 Dir["#{File.dirname(__FILE__)}/../spec/support/**/*.rb"].sort.each { |ext| require ext }
 Dir["#{File.dirname(__FILE__)}/../spec/factories/*.rb"].sort.each { |ext| require ext }
 

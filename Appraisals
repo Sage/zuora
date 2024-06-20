@@ -14,3 +14,9 @@ appraise "rails-6" do
   gem 'bigdecimal'
   gem 'alias_method_chain'
 end
+
+appraise "rails-7" do
+  gem 'activemodel', '~> 7.1'
+  gem 'bigdecimal'
+  gem 'alias_method_chain'
+end

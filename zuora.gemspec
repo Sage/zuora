@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'factory_bot'#, '~> 2.6.4'
   s.add_development_dependency 'guard-rspec', '~> 0.6.0'
   s.add_development_dependency 'pry'
+  s.add_development_dependency 'pry-byebug'
   s.add_development_dependency 'pry-nav'
   s.add_development_dependency 'rake', '~> 13.0'
   s.add_development_dependency 'redcarpet', '~> 2.1.0'

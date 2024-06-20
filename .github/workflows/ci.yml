@@ -25,6 +25,8 @@ jobs:
             ruby: '3.2'
           - gemfile: rails_6
             ruby: '2.7'
+          - gemfile: rails_7
+            ruby: '2.7'
     name: ${{ matrix.gemfile }}, Ruby ${{ matrix.ruby }}
 
     steps:

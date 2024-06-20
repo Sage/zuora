@@ -14,13 +14,12 @@ jobs:
           - rails_4
           - rails_5
           - rails_6
+          - rails_7
         rubygems:
           - default
         ruby:
           - '2.7'
-          # - '3.2'
-        # bundler:
-        #   - default
+          - '3.2'
         exclude:
           - gemfile: rails_4
             ruby: '3.2'
@@ -35,7 +34,6 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           rubygems: ${{ matrix.rubygems }}
-          # bundler: ${{ matrix.bundler }}
           bundler-cache: true
 
       - name: Export ENV

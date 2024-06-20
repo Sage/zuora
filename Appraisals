@@ -8,7 +8,8 @@ appraise "rails-5" do
   gem 'activemodel', '~> 5.2'
   gem 'alias_method_chain'
   gem 'bigdecimal'
-  gem 'sqlite3', '~> 1.3.0'
+  gem 'sqlite3', '~> 2.0'
+  gem 'i18n', '~> 1.5.1'
 end
 
 appraise "rails-6" do

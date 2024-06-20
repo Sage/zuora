@@ -3,7 +3,8 @@
 source "https://rubygems.org"
 
 gem "activemodel", "~> 6.1"
-gem "bigdecimal"
 gem "alias_method_chain"
+gem "bigdecimal"
+gem "sqlite3", "~> 2.0"
 
 gemspec path: "../"

@@ -25,12 +25,14 @@ jobs:
             ruby: '3.2'
           - gemfile: rails_6.gemfile
             ruby: '2.7'
+    name: ${{ matrix.gemfile }}, Ruby ${{ matrix.ruby }}
+
     steps:
       - uses: actions/checkout@v4
       - name: Set up Ruby and Bundle
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ matrix.ruby-version }}
+          ruby-version: ${{ matrix.ruby }}
           rubygems: ${{ matrix.rubygems }}
           bundler: ${{ matrix.bundler }}
           bundler-cache: true
@@ -54,7 +56,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ matrix.ruby-version }}
+          ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - name: Clear any existing packages
         run: rm -f $GEMS_PATH

@@ -36,7 +36,7 @@ module Zuora
     # @return [Hash]
     attr_accessor :options
 
-    WSDL = if config&.wsdl_path
+    WSDL = if config && config.wsdl_path
              config.wsdl_path
            else
              File.expand_path('../../../wsdl/zuora.a.78.0.wsdl', __FILE__)

@@ -15,8 +15,8 @@ module Zuora::Objects
     validates_numericality_of :amount
     validates_numericality_of :balance, :allow_nil => true
     validates_length_of       :comments, :maximum => 255
-    # validates_datetime_of     :due_date
-    # validates_datetime_of     :invoice_date
+    validates_datetime_of     :due_date
+    validates_datetime_of     :invoice_date
     validates_inclusion_of    :includes_one_time, :in => [true, false]
     validates_inclusion_of    :includes_recurring, :in => [true, false]
     validates_inclusion_of    :includes_usage, :in => [true, false]

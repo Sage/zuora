@@ -27,6 +27,5 @@ module Zuora
     autoload :RatePlanData,              'zuora/objects/rate_plan_data'
     autoload :RatePlanChargeData,        'zuora/objects/rate_plan_charge_data'
     # autoload :Refund,                    'zuora/objects/refund'
-    # autoload :RefundInvoicePayment,      'zuora/objects/refund_invoice_payment'
   end
 end

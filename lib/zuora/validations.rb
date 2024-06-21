@@ -9,7 +9,7 @@ module Zuora
     class DateTimeValidator < ActiveModel::EachValidator
       def validate_each(record, attribute, value)
         unless [DateTime, Time].any? { |klass| value.is_a?(klass) }
-          record.errors[attribute] << (options[:message] || "is not a valid datetime")
+        record.errors.add(attribute, (options[:message] || "is not a valid datetime"))
         end
       end
     end
@@ -17,7 +17,7 @@ module Zuora
     class DateValidator < ActiveModel::EachValidator
       def validate_each(record, attribute, value)
         unless [Date].any? { |klass| value.is_a?(klass) }
-          record.errors[attribute] << (options[:message] || "is not a valid date")
+          record.errors.add(attribute, (options[:message] || "is not a valid date"))
         end
       end
     end

@@ -16,7 +16,7 @@ module Zuora::Objects
     INCLUDED_UNITS              = ['Tiered Pricing','Tiered with Overage Pricing','Volume Pricing']
     OVERAGE_CALCULATION_OPTIONS = %w(EndOfSmoothingPeriod PerBillingPeriod)
     OVERAGE_UNUSED_UNITS_CREDIT_OPTIONS = %w(NoCredit CreditBySpecificRate)
-    # PRICE_INCREASE_OPTIONS = %w(FromTenantPercentageValue SpecificPercentageValue)
+    PRICE_INCREASE_OPTIONS = %w(FromTenantPercentageValue SpecificPercentageValue)
     REV_REC_TRIGGER_CONDITIONS =  %w(ContractEffectiveDate ServiceActivationDate CustomerAcceptanceDate)
     SMOOTHING_MODELS = %w(RollingWindow Rollover)
 

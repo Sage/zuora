@@ -15,7 +15,7 @@ module Zuora::Objects
     validates_length_of       :gateway_response_code, :maximum => 20
     validates_inclusion_of    :method_type, :in => %w(ACH Cash Check CreditCard Other PayPal WireTransfer DebitCard CreditCardReferenceTransaction)
     validates_length_of       :payment_method_id, :maximum => 60
-    # validates_datetime_of     :refund_date
+    validates_date_of         :refund_date
     # validates_datetime_of     :refund_transaction_time, :allow_nil => true
     validates_length_of       :soft_descriptor, :maximum => 35, :allow_nil => true
     validates_length_of       :soft_descriptor_phone, :maximum => 20, :allow_nil => true

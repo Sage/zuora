@@ -36,15 +36,13 @@ module Zuora
     # @return [Hash]
     attr_accessor :options
 
-    # Leaving the old approach used to define value of WSDL
-    # till we understand how/where config.wsdl_path is been set
+    # config object is not available here. Replaced the use of WSDL constant
+    # with a call to fetch_wsdl in the private method
     # WSDL = if config && config.wsdl_path
     #          config.wsdl_path
     #        else
-    #          File.expand_path('../../../wsdl/zuora.a.38.0.wsdl', __FILE__)
+    #          File.expand_path('../../../wsdl/zuora.a.78.0.wsdl', __FILE__)
     #        end
-
-    WSDL = File.expand_path('../../../wsdl/zuora.a.78.0.wsdl', __FILE__)
     SOAP_VERSION = 2
     SANDBOX_ENDPOINT = 'https://apisandbox.zuora.com/apps/services/a/78.0'
 
@@ -143,7 +141,15 @@ module Zuora
     end
 
     def make_client
-      Savon.client(wsdl: WSDL, soap_version: SOAP_VERSION, log: config.log || true, ssl_verify_mode: :none)
+      Savon.client(wsdl: fetch_wsdl, soap_version: SOAP_VERSION, log: config.log || true, ssl_verify_mode: :none)
+    end
+
+    def fetch_wsdl
+      if config && config.wsdl_path
+        config.wsdl_path
+      else
+        File.expand_path('../../../wsdl/zuora.a.78.0.wsdl', __FILE__)
+      end
     end
   end
 

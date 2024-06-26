@@ -45,10 +45,23 @@ All additional requirements for development should be referenced in the provided
 ```
 
 
-## Test Suite
-  This library comes with a full test suite, which can be ran using the standard rake utility.
-
-      $ rake spec
+## Test in Docker
+  1. Run the below command to build a Docker container for the tests
+  ```
+  docker-compose up -d
+  ```
+  1. Run the below command to access the zuora Docker container
+  ```
+  docker exec -it -u0 zuora bash
+  ```
+  1. Run the command below to install the dependencies for each appraisal
+  ```
+  bundle exec appraisal install
+  ```
+  1. Run the below command to run tests using the dependencies configured for Rails 5
+  ```
+  bundle exec appraisal rails-5 bundle exec rspec -t ~type:integration --force-color --format doc
+  ```
 
 ## Multiple Connectors
   There are mutiple connectors available to us to communicate from library to Zuora (or even a test

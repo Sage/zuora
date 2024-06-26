@@ -18,4 +18,3 @@ module Zuora
 end
 
 String.send :include, Zuora::CoreExt::String
-

@@ -9,8 +9,8 @@ describe "Product Catalog", type: :integration do
   after do
     Zuora::Objects::Product.where(:name => @product_name).map(&:destroy)
   end
-  
+
   it "creates a product catalog" do
-    product_catalog = FactoryGirl.create(:product_catalog, :name => @product_name)
+    product_catalog = FactoryBot.create(:product_catalog, :name => @product_name)
   end
 end

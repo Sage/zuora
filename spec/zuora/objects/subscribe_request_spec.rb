@@ -28,13 +28,14 @@ describe Zuora::Objects::SubscribeRequest do
         subject.product_rate_plan = Zuora::Objects::ProductRatePlan.find('stub')
       end
 
-      subject.subscription = FactoryGirl.build(:subscription)
+      subject.subscription = FactoryBot.build(:subscription)
     end
 
     it "provides properly formatted xml when using existing objects" do
       MockResponse.responds_with(:subscribe_request_success) do
         subject.should be_valid
-        subject.create.should == true
+        sub_resp = subject.create
+        sub_resp[:success].should == true
       end
 
       xml = Zuora::Api.instance.last_request
@@ -51,11 +52,12 @@ describe Zuora::Objects::SubscribeRequest do
     end
 
     it "provides full account info when new object" do
-      subject.account = FactoryGirl.build(:account)
+      subject.account = FactoryBot.build(:account)
 
       MockResponse.responds_with(:subscribe_request_success) do
         subject.should be_valid
-        subject.create.should == true
+        sub_resp = subject.create
+        sub_resp[:success].should == true
       end
 
       xml = Zuora::Api.instance.last_request
@@ -66,11 +68,12 @@ describe Zuora::Objects::SubscribeRequest do
     end
 
     it "provides full bill_to_contact info when new object" do
-      subject.bill_to_contact = FactoryGirl.build(:contact, :account => @account)
+      subject.bill_to_contact = FactoryBot.build(:contact, :account => @account)
 
       MockResponse.responds_with(:subscribe_request_success) do
         subject.should be_valid
-        subject.create.should == true
+        sub_resp = subject.create
+        sub_resp[:success].should == true
       end
 
       xml = Zuora::Api.instance.last_request
@@ -80,11 +83,12 @@ describe Zuora::Objects::SubscribeRequest do
     end
 
     it "provides full payment_method info when new object" do
-      subject.payment_method = FactoryGirl.build(:payment_method_ach, :account => @account, :ach_account_name => 'Testing')
+      subject.payment_method = FactoryBot.build(:payment_method_ach, :account => @account, :ach_account_name => 'Testing')
 
       MockResponse.responds_with(:subscribe_request_success) do
         subject.should be_valid
-        subject.create.should == true
+        sub_resp = subject.create
+        sub_resp[:success].should == true
       end
 
       xml = Zuora::Api.instance.last_request
@@ -98,8 +102,9 @@ describe Zuora::Objects::SubscribeRequest do
     it "handles applying subscribe failures messages" do
       MockResponse.responds_with(:subscribe_request_failure) do
         subject.should be_valid
-        subject.create.should == false
-        subject.errors[:base].should include('Initial Term should be greater than zero')
+        sub_resp = subject.create
+        sub_resp[:success].should == false
+        sub_resp[:errors][:message].should include('Initial Term should be greater than zero')
       end
     end
 
@@ -107,7 +112,8 @@ describe Zuora::Objects::SubscribeRequest do
       MockResponse.responds_with(:subscribe_request_success) do
         subject.subscribe_options = {:generate_invoice => true, :process_payments => true}
         subject.should be_valid
-        subject.create.should == true
+        sub_resp = subject.create
+        sub_resp[:success].should == true
       end
 
       xml = Zuora::Api.instance.last_request
@@ -118,7 +124,8 @@ describe Zuora::Objects::SubscribeRequest do
     it "applies valid response data to the proper nested objects and resets dirty" do
       MockResponse.responds_with(:subscribe_request_success) do
         subject.should be_valid
-        subject.create.should == true
+        sub_resp = subject.create
+        sub_resp[:success].should == true
         subject.subscription.should_not be_changed
         subject.subscription.should_not be_new_record
       end

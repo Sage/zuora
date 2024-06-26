@@ -1,5 +1,6 @@
 module Zuora
   module Attributes
+
     def self.included(base)
       base.send(:include, ActiveModel::Naming)
       base.send(:include, ActiveModel::Conversion)
@@ -39,19 +40,17 @@ module Zuora
         # generate association overrides for complex object handling
         # and cache the objects so that they may be modified and updated
         class_variable_get(:@@complex_attributes).each do |var, scope|
-          # set up the instance variable for the new assoc collection
-          # for new records, but call the original one for existing
-          # records and cache/return the result for subsequent calls.
-          class_eval <<-EVAL
-            def #{scope}_with_complex
-              if new_record? || @#{scope}_cached
-                @#{scope} ||= []
-              else
-                @#{scope}_cached = true
-                @#{scope} = #{scope}_without_complex
+          class_eval <<~EVAL
+            prepend(Module.new do
+              def #{scope}
+                if new_record? || @#{scope}_cached
+                  @#{scope} ||= []
+                else
+                  @#{scope}_cached = true
+                  @#{scope} = super
+                end
               end
-            end
-            alias_method_chain :#{scope}, :complex
+            end)
           EVAL
         end
       end
@@ -143,7 +142,7 @@ module Zuora
       def inherited(subclass)
         super
         xpath = "//xs:complexType[@name='#{subclass.remote_name}']//xs:sequence/xs:element"
-        document = Zuora::Api.instance.client.wsdl.parser.instance_variable_get('@document')
+        document = Zuora::Api.instance.wsdl.parser.instance_variable_get('@document')
         q = document.xpath(xpath, 's0' => 'http://schemas.xmlsoap.org/wsdl/', 'xs' => 'http://www.w3.org/2001/XMLSchema')
         wsdl_attrs = (q.map{|e| e.attributes['name'].to_s.underscore.to_sym }) << :id
         subclass.send(:class_variable_set, :@@wsdl_attributes,  wsdl_attrs)
@@ -209,10 +208,10 @@ module Zuora
 
     # remove all dirty tracking for the object and return self for chaining.
     def clear_changed_attributes!
-      @changed_attributes = {}
+      clear_changes_information
       self
     end
-    
+
     # the name to use when referencing remote Zuora objects
     def remote_name
       self.class.name.base_name

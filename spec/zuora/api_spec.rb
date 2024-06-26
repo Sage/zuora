@@ -8,10 +8,9 @@ describe Zuora::Api do
       Zuora::Api.any_instance.stub(:authenticated?).and_return(true)
     end
 
-    # This became necessary as a result of not using WSDL constant
-    # it "has readable WSDL" do
-    #   File.exist?(Zuora::Api::WSDL).should be
-    # end
+    it "has readable WSDL" do
+      File.exist?(Zuora::Api::WSDL).should be
+    end
 
     it "can be configured to use sandbox" do
       Zuora.configure(:username => 'example', :password => 'test', :sandbox => true)

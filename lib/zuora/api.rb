@@ -36,13 +36,7 @@ module Zuora
     # @return [Hash]
     attr_accessor :options
 
-    # config object is not available here. Replaced the use of WSDL constant
-    # with a call to fetch_wsdl in the private method
-    # WSDL = if config && config.wsdl_path
-    #          config.wsdl_path
-    #        else
-    #          File.expand_path('../../../wsdl/zuora.a.78.0.wsdl', __FILE__)
-    #        end
+    WSDL = File.expand_path('../../../wsdl/zuora.a.78.0.wsdl', __FILE__)
     SOAP_VERSION = 2
     SANDBOX_ENDPOINT = 'https://apisandbox.zuora.com/apps/services/a/78.0'
 
@@ -145,11 +139,7 @@ module Zuora
     end
 
     def fetch_wsdl
-      if config && config.wsdl_path
-        config.wsdl_path
-      else
-        File.expand_path('../../../wsdl/zuora.a.78.0.wsdl', __FILE__)
-      end
+      config&.wsdl_path || WSDL
     end
   end
 

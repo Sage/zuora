@@ -48,17 +48,17 @@ All additional requirements for development should be referenced in the provided
 ## Test in Docker
   1. Run the below command to build a Docker container for the tests
   ```
-  docker-compose up -d
+  docker-compose up -d --build
   ```
-  1. Run the below command to access the zuora Docker container
+  2. Run the below command to access the zuora Docker container
   ```
   docker exec -it -u0 zuora bash
   ```
-  1. Run the command below to install the dependencies for each appraisal
+  3. Run the command below to install the dependencies for each appraisal
   ```
   bundle exec appraisal install
   ```
-  1. Run the below command to run tests using the dependencies configured for Rails 5
+  4. Run the below command to run tests using the dependencies configured for Rails 5
   ```
   bundle exec appraisal rails-5 bundle exec rspec -t ~type:integration --force-color --format doc
   ```

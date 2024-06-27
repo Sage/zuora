@@ -66,6 +66,6 @@ jobs:
           curl -u $JFROG_USER:$JFROG_PASS $RUBYGEMS_HOST/api/v1/api_key.yaml > $HOME/.gem/credentials
           chmod 600 $HOME/.gem/credentials
       - name: Build gem
-        run: bundle exec rake build zuora.gemspec
+        run: bundle exec gem build zuora.gemspec
       - name: Publish
-        run: gem push $GEMS_PATH
+        run: bundle exec gem push $GEMS_PATH

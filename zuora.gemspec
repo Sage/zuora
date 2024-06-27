@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.extra_rdoc_files = ['README.md']
+  s.required_ruby_version = '>= 2.7'
 
   s.add_development_dependency 'appraisal'
   s.add_development_dependency 'artifice'

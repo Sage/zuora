@@ -9,3 +9,4 @@ gemfiles/*.gemfile.lock
 zuora.log
 Gemfile.lock
 coverage
+pkg

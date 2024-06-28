@@ -1,4 +1,5 @@
 require 'bundler'
+require 'bundler/gem_tasks'
 Bundler.setup
 require 'appraisal'
 require 'rspec/core/rake_task'

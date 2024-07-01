@@ -4,7 +4,7 @@ $:.push File.expand_path('../lib', __FILE__)
 require 'zuora/version'
 
 Gem::Specification.new do |s|
-  s.name        = 'sage-zuora'
+  s.name        = 'zuora'
   s.version     = Zuora::Version.to_s
   s.authors     = ['Sage Accounting']
   s.email       = ['sageone@sage.com']

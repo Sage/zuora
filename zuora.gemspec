@@ -5,7 +5,7 @@ require 'zuora/version'
 
 Gem::Specification.new do |s|
   s.name        = 'zuora'
-  s.version     = Zuora::Version.to_s
+  s.version     = "#{Zuora::Version}-sage"
   s.authors     = ['Sage Accounting']
   s.email       = ['sageone@sage.com']
   s.summary     = 'Zuora - ActiveModel backed client for the Zuora API'

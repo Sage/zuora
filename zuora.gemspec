@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.description = 'Zuora - Easily integrate the Zuora SOAP API using ruby objects.'
   s.homepage    = 'https://github.com/zuorasc/zuora'
 
-  s.files       = Dir.glob('{bin,lib}/**/**/**')
+  s.files       = Dir.glob('{bin,lib,wsdl}/**/**/**')
   s.bindir = 'exe'
   s.executables = s.files.grep(%r{^exe/}) { |f| File.basename(f) }
   s.require_paths = ['lib']

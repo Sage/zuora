@@ -30,12 +30,13 @@ module Zuora::Objects
       defaults :status => 'Draft'
     end
 
-    def create
+    def apply_percentage_discount
+      self.status = 'Completed'
       result = self.connector.amend
-      apply_response(result.to_hash, :amend_response)
+      apply_percentage_discount_response(result.to_hash, :amend_response)
     end
 
-    def apply_response(response_hash, type)
+    def apply_percentage_discount_response(response_hash, type)
       result = response_hash[type][:results]
       if result[:success]
         self.amendment_ids = result[:amendment_ids]

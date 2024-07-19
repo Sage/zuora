@@ -8,7 +8,6 @@ module Zuora::Objects
     attr_accessor :product_rate_plan
 
     store_accessors :subscribe_options
-    store_accessors :preview_options
 
     validate do |request|
       request.must_have_usable(:account)
@@ -29,12 +28,9 @@ module Zuora::Objects
     # used to validate nested objects
     def must_have_usable(ref)
       obj = self.send(ref)
-      return errors[ref] << "must be provided" if obj.blank?
-      obj = obj.is_a?(Array) ? obj : [obj]
-      obj.each do |object|
-        if object.new_record? || object.changed?
-          errors[ref] << "is invalid" unless object.valid?
-        end
+      return errors[ref] << "must be provided" if obj.nil?
+      if obj.new_record? || obj.changed?
+        errors[ref] << "is invalid" unless obj.valid?
       end
     end
 
@@ -50,16 +46,16 @@ module Zuora::Objects
     def apply_response(response_hash, type)
       result = response_hash[type][:result]
       if result[:success]
-        subscription.account_id = result[:account_id]
         subscription.id = result[:subscription_id]
         subscription.name = result[:subscription_number]
         subscription.clear_changed_attributes!
         @previously_changed = changes
-        clear_changes_information
+        @changed_attributes.clear
+        return true
       else
         self.errors.add(:base, result[:errors][:message])
+        return false
       end
-      return result
     end
     #
     # TODO: Restructute an intermediate class that includes

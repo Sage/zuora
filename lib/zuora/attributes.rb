@@ -42,16 +42,19 @@ module Zuora
           # set up the instance variable for the new assoc collection
           # for new records, but call the original one for existing
           # records and cache/return the result for subsequent calls.
-          class_eval <<-EVAL
-            def #{scope}_with_complex
-              if new_record? || @#{scope}_cached
-                @#{scope} ||= []
-              else
-                @#{scope}_cached = true
-                @#{scope} = #{scope}_without_complex
+          class_eval <<~EVAL
+            prepend(
+              Module.new do
+                def #{scope}
+                  if new_record? || @#{scope}_cached
+                    @#{scope} ||= []
+                  else
+                    @#{scope}_cached = true
+                    @#{scope} = super
+                  end
+                end
               end
-            end
-            alias_method_chain :#{scope}, :complex
+            )
           EVAL
         end
       end
@@ -212,7 +215,7 @@ module Zuora
       @changed_attributes = {}
       self
     end
-    
+
     # the name to use when referencing remote Zuora objects
     def remote_name
       self.class.name.base_name

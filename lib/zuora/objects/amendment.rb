@@ -36,7 +36,7 @@ module Zuora::Objects
       apply_percentage_discount_response(result.to_hash, :amend_response)
     end
 
-    private 
+    private
 
     def apply_percentage_discount_response(response_hash, type)
       result = response_hash[type][:results]
@@ -45,7 +45,7 @@ module Zuora::Objects
         self.invoice_id = result[:invoice_id]
         self.payment_transaction_number = result[:payment_transaction_number]
         @previously_changed = changes
-        @changed_attributes.clear
+        clear_changes_information
         return true
       else
         raise StandardError.new(result[:errors][:message])

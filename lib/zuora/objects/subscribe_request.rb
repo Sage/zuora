@@ -50,7 +50,7 @@ module Zuora::Objects
         subscription.name = result[:subscription_number]
         subscription.clear_changed_attributes!
         @previously_changed = changes
-        @changed_attributes.clear
+        clear_changes_information
         return true
       else
         self.errors.add(:base, result[:errors][:message])
@@ -68,4 +68,3 @@ module Zuora::Objects
     def save ; end
   end
 end
-

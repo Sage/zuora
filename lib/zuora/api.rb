@@ -59,7 +59,6 @@ module Zuora
         options[:message] = xml.target!
       end
       options[:soap_header] = { 'env:SessionHeader' => { 'zns:Session' => self.session.try(:key) } }
-
       client.call(method, options)
     rescue Savon::SOAPFault, IOError => e
       raise Zuora::Fault.new(:message => e.message)
@@ -101,7 +100,7 @@ module Zuora
         wsdl: config&.wsdl_path ? config.wsdl_path : File.expand_path('../../../wsdl/zuora.a.38.0.wsdl', __FILE__),
         ssl_verify_mode: :none,
         soap_version: SOAP_VERSION,
-        log: log: config&.log || true,
+        log: config&.log || true,
         filters: [:password]
       )
     end

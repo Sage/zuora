@@ -40,7 +40,7 @@ module Zuora::Objects
         self.send("#{k}=", v)
       }
       @previously_changed = changes
-      @changed_attributes.clear
+      clear_changes_information
       self
     end
 
@@ -172,7 +172,7 @@ module Zuora::Objects
       if result[:success]
         self.id = result[:id]
         @previously_changed = changes
-        @changed_attributes.clear
+        clear_changes_information
         return true
       else
         raise StandardError.new(result[:errors][:message])

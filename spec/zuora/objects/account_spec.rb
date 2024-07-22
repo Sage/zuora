@@ -131,11 +131,8 @@ describe Zuora::Objects::Account do
         expect(Zuora::Api.instance.client).to receive(:call).with(
           :update,
           {
-            message: '<zns:zObjects xsi:type="ons:Account"><ons:Id>4028e488348752ce0134876a25867cb2</ons:Id>'\
-              '<ons:AccountNumber>test-1</ons:AccountNumber><ons:AutoPay>false</ons:AutoPay><ons:Batch>Batch1'\
-              '</ons:Batch><ons:BillCycleDay>1</ons:BillCycleDay><ons:Currency>USD</ons:Currency><ons:Name>FooMax'\
-              '</ons:Name><ons:PaymentTerm>Due Upon Receipt</ons:PaymentTerm><ons:Status>Draft</ons:Status>'\
-              '</zns:zObjects>',
+            message: '<zns:zObjects xsi:type="ons:Account"><ons:Id>4028e488348752ce0134876a25867cb2</ons:Id><ons:Name>'\
+              'FooMax</ons:Name></zns:zObjects>',
             soap_header: { 'env:SessionHeader' => {  'zns:Session' => 'session_key' } }
           }
         ).and_call_original

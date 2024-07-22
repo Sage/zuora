@@ -52,9 +52,9 @@ describe Zuora::Objects::SubscribeRequest do
               '<zns:PaymentMethod><ons:Id>4028e48834aa10a30134c50f40901ea7</ons:Id></zns:PaymentMethod>'\
               '<zns:BillToContact><ons:Id>4028e4873491cc770134972e75746e4c</ons:Id></zns:BillToContact>'\
               '<zns:SubscriptionData><zns:Subscription><ons:AutoRenew>false</ons:AutoRenew><ons:ContractEffectiveDate>'\
-              "#{Time.now.rfc3339}</ons:ContractEffectiveDate><ons:InitialTerm>1</ons:InitialTerm>"\
+              "#{Time.now.iso8601}</ons:ContractEffectiveDate><ons:InitialTerm>1</ons:InitialTerm>"\
               "<ons:IsInvoiceSeparate>false</ons:IsInvoiceSeparate><ons:Name>#{sub_name}</ons:Name>"\
-              "<ons:RenewalTerm>0</ons:RenewalTerm><ons:TermStartDate>#{Time.now.rfc3339}</ons:TermStartDate>"\
+              "<ons:RenewalTerm>0</ons:RenewalTerm><ons:TermStartDate>#{Time.now.iso8601}</ons:TermStartDate>"\
               '</zns:Subscription><zns:RatePlanData><zns:RatePlan><ons:ProductRatePlanId>'\
               '4028e4883491c50901349d0e1e571341</ons:ProductRatePlanId></zns:RatePlan></zns:RatePlanData>'\
               '</zns:SubscriptionData></zns:subscribes>',
@@ -79,9 +79,9 @@ describe Zuora::Objects::SubscribeRequest do
               '<ons:Status>Draft</ons:Status></zns:Account><zns:PaymentMethod><ons:Id>4028e48834aa10a30134c50f40901ea7'\
               '</ons:Id></zns:PaymentMethod><zns:BillToContact><ons:Id>4028e4873491cc770134972e75746e4c</ons:Id>'\
               '</zns:BillToContact><zns:SubscriptionData><zns:Subscription><ons:AutoRenew>false</ons:AutoRenew>'\
-              "<ons:ContractEffectiveDate>#{Time.now.rfc3339}</ons:ContractEffectiveDate><ons:InitialTerm>1"\
+              "<ons:ContractEffectiveDate>#{Time.now.iso8601}</ons:ContractEffectiveDate><ons:InitialTerm>1"\
               "</ons:InitialTerm><ons:IsInvoiceSeparate>false</ons:IsInvoiceSeparate><ons:Name>#{sub_name}</ons:Name>"\
-              "<ons:RenewalTerm>0</ons:RenewalTerm><ons:TermStartDate>#{Time.now.rfc3339}</ons:TermStartDate>"\
+              "<ons:RenewalTerm>0</ons:RenewalTerm><ons:TermStartDate>#{Time.now.iso8601}</ons:TermStartDate>"\
               '</zns:Subscription><zns:RatePlanData><zns:RatePlan><ons:ProductRatePlanId>'\
               '4028e4883491c50901349d0e1e571341</ons:ProductRatePlanId></zns:RatePlan></zns:RatePlanData>'\
               '</zns:SubscriptionData></zns:subscribes>',
@@ -104,10 +104,10 @@ describe Zuora::Objects::SubscribeRequest do
               '<zns:PaymentMethod><ons:Id>4028e48834aa10a30134c50f40901ea7</ons:Id></zns:PaymentMethod>'\
               '<zns:BillToContact><ons:AccountId>4028e488348752ce0134876a25867cb2</ons:AccountId><ons:FirstName>'\
               'Example</ons:FirstName><ons:LastName>User 1</ons:LastName></zns:BillToContact><zns:SubscriptionData>'\
-              "<zns:Subscription><ons:AutoRenew>false</ons:AutoRenew><ons:ContractEffectiveDate>#{Time.now.rfc3339}"\
+              "<zns:Subscription><ons:AutoRenew>false</ons:AutoRenew><ons:ContractEffectiveDate>#{Time.now.iso8601}"\
               '</ons:ContractEffectiveDate><ons:InitialTerm>1</ons:InitialTerm><ons:IsInvoiceSeparate>false'\
               "</ons:IsInvoiceSeparate><ons:Name>#{sub_name}</ons:Name><ons:RenewalTerm>0</ons:RenewalTerm>"\
-              "<ons:TermStartDate>#{Time.now.rfc3339}</ons:TermStartDate></zns:Subscription><zns:RatePlanData>"\
+              "<ons:TermStartDate>#{Time.now.iso8601}</ons:TermStartDate></zns:Subscription><zns:RatePlanData>"\
               '<zns:RatePlan><ons:ProductRatePlanId>4028e4883491c50901349d0e1e571341</ons:ProductRatePlanId>'\
               '</zns:RatePlan></zns:RatePlanData></zns:SubscriptionData></zns:subscribes>',
             soap_header: { 'env:SessionHeader' => {  'zns:Session' => 'session_key' } }
@@ -132,9 +132,9 @@ describe Zuora::Objects::SubscribeRequest do
             'Bank of Zuora</ons:AchBankName><ons:Type>ACH</ons:Type><ons:UseDefaultRetryRule>true'\
             '</ons:UseDefaultRetryRule></zns:PaymentMethod><zns:BillToContact><ons:Id>4028e4873491cc770134972e75746e4c'\
             '</ons:Id></zns:BillToContact><zns:SubscriptionData><zns:Subscription><ons:AutoRenew>false</ons:AutoRenew>'\
-            "<ons:ContractEffectiveDate>#{Time.now.rfc3339}</ons:ContractEffectiveDate><ons:InitialTerm>1"\
+            "<ons:ContractEffectiveDate>#{Time.now.iso8601}</ons:ContractEffectiveDate><ons:InitialTerm>1"\
             "</ons:InitialTerm><ons:IsInvoiceSeparate>false</ons:IsInvoiceSeparate><ons:Name>#{sub_name}"\
-            "</ons:Name><ons:RenewalTerm>0</ons:RenewalTerm><ons:TermStartDate>#{Time.now.rfc3339}</ons:TermStartDate>"\
+            "</ons:Name><ons:RenewalTerm>0</ons:RenewalTerm><ons:TermStartDate>#{Time.now.iso8601}</ons:TermStartDate>"\
             '</zns:Subscription><zns:RatePlanData><zns:RatePlan><ons:ProductRatePlanId>'\
             '4028e4883491c50901349d0e1e571341</ons:ProductRatePlanId></zns:RatePlan></zns:RatePlanData>'\
             '</zns:SubscriptionData></zns:subscribes>',
@@ -165,10 +165,10 @@ describe Zuora::Objects::SubscribeRequest do
               '<zns:BillToContact><ons:Id>4028e4873491cc770134972e75746e4c</ons:Id></zns:BillToContact>'\
               '<zns:SubscribeOptions><zns:GenerateInvoice>true</zns:GenerateInvoice><zns:ProcessPayments>true'\
               '</zns:ProcessPayments></zns:SubscribeOptions><zns:SubscriptionData><zns:Subscription><ons:AutoRenew>'\
-              "false</ons:AutoRenew><ons:ContractEffectiveDate>#{Time.now.rfc3339}</ons:ContractEffectiveDate>"\
+              "false</ons:AutoRenew><ons:ContractEffectiveDate>#{Time.now.iso8601}</ons:ContractEffectiveDate>"\
               '<ons:InitialTerm>1</ons:InitialTerm><ons:IsInvoiceSeparate>false</ons:IsInvoiceSeparate><ons:Name>'\
               "#{sub_name}</ons:Name><ons:RenewalTerm>0</ons:RenewalTerm><ons:TermStartDate>"\
-              "#{Time.now.rfc3339}</ons:TermStartDate></zns:Subscription><zns:RatePlanData><zns:RatePlan>"\
+              "#{Time.now.iso8601}</ons:TermStartDate></zns:Subscription><zns:RatePlanData><zns:RatePlan>"\
               '<ons:ProductRatePlanId>4028e4883491c50901349d0e1e571341</ons:ProductRatePlanId></zns:RatePlan>'\
               '</zns:RatePlanData></zns:SubscriptionData></zns:subscribes>',
             soap_header: { 'env:SessionHeader' => {  'zns:Session' => 'session_key' } }
@@ -183,6 +183,7 @@ describe Zuora::Objects::SubscribeRequest do
       MockResponse.responds_with(:subscribe_request_success) do
         expect(subject).to be_valid
         expect(subject.create).to be true
+        expect(subject.subscription).to_not be_changed
         expect(subject.subscription).to_not be_new_record
       end
     end

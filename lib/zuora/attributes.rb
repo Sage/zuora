@@ -212,7 +212,7 @@ module Zuora
 
     # remove all dirty tracking for the object and return self for chaining.
     def clear_changed_attributes!
-      @changed_attributes = {}
+      clear_changes_information
       self
     end
 

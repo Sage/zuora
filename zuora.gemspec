@@ -34,10 +34,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'timecop'
   s.add_development_dependency 'yard'
   s.add_dependency 'akami'
-  s.add_dependency 'httpi'
   s.add_dependency 'libxml4r'
   s.add_dependency 'nokogiri'
   s.add_dependency 'rack'
-  s.add_dependency 'savon'
+  s.add_dependency 'savon', '>= 2.0', '< 3.0'
   s.add_dependency 'wasabi'
 end

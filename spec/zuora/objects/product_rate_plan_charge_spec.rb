@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 describe Zuora::Objects::ProductRatePlanCharge do
+  before do
+    allow_any_instance_of(Zuora::Api).to receive(:session).and_return double(key: 'session_key')
+  end
+
   context 'complex association support' do
     it 'should have blank association for new object' do
       subject.product_rate_plan_charge_tiers.should == []
@@ -16,23 +20,39 @@ describe Zuora::Objects::ProductRatePlanCharge do
 
     it 'should load remote associations when not a new record' do
       subject.id = 'test'
-      subject.should_not be_new_record
+      expect(subject).to_not be_new_record
 
       MockResponse.responds_with(:product_rate_plan_charge_tier_find_success) do
-        subject.product_rate_plan_charge_tiers.size.should == 2
+        expect(Zuora::Api.instance.client).to receive(:call).with(
+          :query,
+          {
+            message: '<zns:queryString>select Active, CreatedById, CreatedDate, Currency, EndingUnit, IsOveragePrice, '\
+              'Price, PriceFormat, ProductRatePlanChargeId, StartingUnit, Tier, UpdatedById, UpdatedDate, Id from '\
+              "ProductRatePlanChargeTier where ProductRatePlanChargeId = 'test'</zns:queryString>",
+            soap_header: { 'env:SessionHeader' => {  'zns:Session' => 'session_key' } }
+          }
+        ).and_call_original
+        expect(subject.product_rate_plan_charge_tiers.size).to eq 2
       end
-
-      xml = Zuora::Api.instance.last_request
-      xml.should have_xml("//env:Body/#{zns}:query/#{zns}:queryString").
-        with_value(/select .+ from ProductRatePlanChargeTier where ProductRatePlanChargeId = 'test'/)
     end
 
     it 'should not include complex attributes in the request' do
       MockResponse.responds_with(:product_rate_plan_charge_tier_find_success) do
+        expect(Zuora::Api.instance.client).to receive(:call).with(
+          :query,
+          {
+            message: '<zns:queryString>select AccountingCode, BillCycleDay, BillCycleType, BillingPeriod, '\
+              'BillingPeriodAlignment, ChargeModel, ChargeType, CreatedById, CreatedDate, DefaultQuantity, Description'\
+              ', IncludedUnits, MaxQuantity, MinQuantity, Name, NumberOfPeriod, OverageCalculationOption, '\
+              'OverageUnusedUnitsCreditOption, PriceIncreaseOption, PriceIncreasePercentage, ProductRatePlanId, '\
+              'RevRecCode, RevRecTriggerCondition, SmoothingModel, SpecificBillingPeriod, TriggerEvent, Uom, '\
+              'UpdatedById, UpdatedDate, UseDiscountSpecificAccountingCode, Id from ProductRatePlanCharge where Id = '\
+              "'example'</zns:queryString>",
+            soap_header: { 'env:SessionHeader' => {  'zns:Session' => 'session_key' } }
+          }
+        ).and_call_original
         subject.class.find('example')
       end
-      xml = Zuora::Api.instance.last_request
-      xml.should_not =~ /ProductRatePlanChargeTierData/
     end
   end
 
@@ -59,8 +79,7 @@ describe Zuora::Objects::ProductRatePlanCharge do
       c.trigger_event = 'ServiceActivation'
     end
 
-    # new objects should have empty association
-    @prpc.product_rate_plan_charge_tiers.should == []
+    expect(@prpc.product_rate_plan_charge_tiers).to eq []
 
     tier1 = Zuora::Objects::ProductRatePlanChargeTier.new do |t|
       t.price = 0
@@ -74,52 +93,82 @@ describe Zuora::Objects::ProductRatePlanCharge do
       t.ending_unit = 20
     end
 
-    @prpc.should_not be_valid, 'tiers are required to be valid'
+    expect(@prpc).to_not be_valid, 'tiers are required to be valid'
     @prpc.product_rate_plan_charge_tiers << tier1
     @prpc.product_rate_plan_charge_tiers << tier2
-    @prpc.should be_valid, 'tiers are required to be valid'
+    expect(@prpc).to be_valid, 'tiers are required to be valid'
 
     MockResponse.responds_with(:product_rate_plan_charge_create_success) do
-      @prpc.save.should == true
-      @prpc.should_not be_new_record
+      expect(Zuora::Api.instance.client).to receive(:call).with(
+        :create,
+        {
+          message: '<zns:zObjects xsi:type="ons:ProductRatePlanCharge"><ons:BillCycleType>DefaultFromCustomer'\
+            '</ons:BillCycleType><ons:BillingPeriod>Month</ons:BillingPeriod><ons:BillingPeriodAlignment>AlignToCharge'\
+            '</ons:BillingPeriodAlignment><ons:ChargeModel>Volume Pricing</ons:ChargeModel><ons:ChargeType>Recurring'\
+            '</ons:ChargeType><ons:IncludedUnits>10</ons:IncludedUnits><ons:Name>Monthly Allowance</ons:Name>'\
+            '<ons:ProductRatePlanId>4028e4883491c50901349d0e1e571341</ons:ProductRatePlanId><ons:SmoothingModel>'\
+            'Rollover</ons:SmoothingModel><ons:TriggerEvent>ServiceActivation</ons:TriggerEvent><ons:Uom>Each'\
+            '</ons:Uom><ons:ProductRatePlanChargeTierData><zns:ProductRatePlanChargeTier '\
+            'xsi:type="ons:ProductRatePlanChargeTier"><ons:Currency>USD</ons:Currency><ons:EndingUnit>10'\
+            '</ons:EndingUnit><ons:Price>0</ons:Price><ons:StartingUnit>0</ons:StartingUnit>'\
+            '</zns:ProductRatePlanChargeTier><zns:ProductRatePlanChargeTier xsi:type="ons:ProductRatePlanChargeTier">'\
+            '<ons:Currency>USD</ons:Currency><ons:EndingUnit>20</ons:EndingUnit><ons:Price>50</ons:Price>'\
+            '<ons:StartingUnit>11</ons:StartingUnit></zns:ProductRatePlanChargeTier>'\
+            '</ons:ProductRatePlanChargeTierData></zns:zObjects>',
+          soap_header: { 'env:SessionHeader' => {  'zns:Session' => 'session_key' } }
+        }
+      ).and_call_original
+      expect(@prpc.save).to be true
+      expect(@prpc).to_not be_new_record
     end
-
-    xml = Zuora::Api.instance.last_request
-    xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:ProductRatePlanChargeTierData")
-    xml.should have_xml("//#{ons}:ProductRatePlanChargeTierData/#{zns}:ProductRatePlanChargeTier")
-    xml.should have_xml("//#{zns}:ProductRatePlanChargeTier/#{ons}:Price").with_value(50)
-    xml.should have_xml("//#{zns}:ProductRatePlanChargeTier/#{ons}:StartingUnit").with_value(11)
-    xml.should have_xml("//#{zns}:ProductRatePlanChargeTier/#{ons}:EndingUnit").with_value(20)
 
     MockResponse.responds_with(:product_rate_plan_charge_tier_find_success) do
+      expect(Zuora::Api.instance.client).to receive(:call).with(
+        :query,
+        {
+          message: '<zns:queryString>select Active, CreatedById, CreatedDate, Currency, EndingUnit, IsOveragePrice, '\
+            'Price, PriceFormat, ProductRatePlanChargeId, StartingUnit, Tier, UpdatedById, UpdatedDate, Id from '\
+            "ProductRatePlanChargeTier where ProductRatePlanChargeId = '4028e48834aa10a30134aaf7f40b3139'"\
+            '</zns:queryString>',
+          soap_header: { 'env:SessionHeader' => {  'zns:Session' => 'session_key' } }
+        }
+      ).and_call_original
       @prpct = @prpc.product_rate_plan_charge_tiers
-      @prpct.size.should == 2
+      expect(@prpct.size).to eq 2
     end
 
-    @prpct.map(&:new_record?).should be_none, 'complex objects should not be new records after save'
-
+    expect(@prpct.map(&:new_record?)).to be_none, 'complex objects should not be new records after save'
     @prpc.product_rate_plan_charge_tiers.first.price = 20
-    @prpc.product_rate_plan_charge_tiers.first.price.should == 20
+    expect(@prpc.product_rate_plan_charge_tiers.first.price).to eq 20
 
     MockResponse.responds_with(:product_rate_plan_charge_update_success) do
-      @prpc.save.should == true
+      expect(Zuora::Api.instance.client).to receive(:call).with(
+        :update,
+        {
+          message: '<zns:zObjects xsi:type="ons:ProductRatePlanCharge"><ons:Id>4028e48834aa10a30134aaf7f40b3139'\
+            '</ons:Id><ons:ProductRatePlanChargeTierData><zns:ProductRatePlanChargeTier '\
+            'xsi:type="ons:ProductRatePlanChargeTier"><ons:Active>true</ons:Active><ons:Price>20</ons:Price>'\
+            '<ons:ProductRatePlanChargeId>4028e48834aa10a30134aaf7f40b3139</ons:ProductRatePlanChargeId><ons:Id>'\
+            '4028e48834aa10a30134aaf7f40b313a</ons:Id></zns:ProductRatePlanChargeTier><zns:ProductRatePlanChargeTier '\
+            'xsi:type="ons:ProductRatePlanChargeTier"><ons:Active>true</ons:Active><ons:Price>50.0</ons:Price>'\
+            '<ons:ProductRatePlanChargeId>4028e48834aa10a30134aaf7f40b3139</ons:ProductRatePlanChargeId>'\
+            '<ons:Id>4028e48834aa10a30134aaf7f40b313b</ons:Id></zns:ProductRatePlanChargeTier>'\
+            '</ons:ProductRatePlanChargeTierData></zns:zObjects>',
+          soap_header: { 'env:SessionHeader' => {  'zns:Session' => 'session_key' } }
+        }
+      ).and_call_original
+      expect(@prpc.save).to eq true
     end
-
-    xml = Zuora::Api.instance.last_request
-    xml.should have_xml("//env:Body/#{zns}:update/#{zns}:zObjects/#{ons}:ProductRatePlanChargeTierData")
-    xml.should have_xml("//env:Body/#{zns}:update/#{zns}:zObjects/#{ons}:Id")
-    xml.should have_xml("//#{ons}:ProductRatePlanChargeTierData/#{zns}:ProductRatePlanChargeTier")
-    xml.should have_xml("//#{zns}:ProductRatePlanChargeTier/#{ons}:Price").with_value(20)
-    xml.should_not have_xml("//#{zns}:ProductRatePlanChargeTier/#{zns}:Id")
-    xml.should_not have_xml("//#{zns}:ProductRatePlanChargeTier/#{ons}:StartingUnit")
-    xml.should_not have_xml("//#{zns}:ProductRatePlanChargeTier/#{ons}:EndingUnit")
 
     MockResponse.responds_with(:product_rate_plan_charge_destroy_success) do
+      expect(Zuora::Api.instance.client).to receive(:call).with(
+        :delete,
+        {
+          message: '<zns:type>ProductRatePlanCharge</zns:type><zns:ids>4028e48834aa10a30134aaf7f40b3139</zns:ids>',
+          soap_header: { 'env:SessionHeader' => {  'zns:Session' => 'session_key' } }
+        }
+      ).and_call_original
       @prpc.destroy
     end
-
-    xml = Zuora::Api.instance.last_request
-    xml.should have_xml("//env:Body/#{zns}:delete/#{zns}:type").with_value('ProductRatePlanCharge')
-    xml.should have_xml("//env:Body/#{zns}:delete/#{zns}:ids").with_value('4028e48834aa10a30134aaf7f40b3139')
   end
 end

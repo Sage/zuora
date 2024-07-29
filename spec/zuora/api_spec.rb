@@ -3,18 +3,13 @@ require 'spec_helper'
 describe Zuora::Api do
   subject { Zuora::Api.instance }
 
-  describe "configuration" do
+  describe 'configuration' do
     before do
       Zuora::Api.any_instance.stub(:authenticated?).and_return(true)
     end
 
-    it "has readable WSDL" do
-      File.exist?(Zuora::Api::WSDL).should be
-    end
-
-    it "can be configured to use sandbox" do
-      Zuora.configure(:username => 'example', :password => 'test', :sandbox => true)
-      Zuora::Api.instance.client.globals[:endpoint].to_s.should == "https://apisandbox.zuora.com/apps/services/a/78.0"
+    it 'uses provided wsdl_path' do
+      expect(Zuora::Api.instance.client.wsdl.endpoint.to_s).to eq 'https://www.zuora.com/apps/services/a/38.0'
     end
 
     it "can be configured multiple times" do

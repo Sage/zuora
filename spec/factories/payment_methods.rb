@@ -9,7 +9,7 @@ FactoryBot.define do
     credit_card_number { "4111111111111111" }
     credit_card_type { "Visa" }
     credit_card_expiration_month { "9" }
-    credit_card_expiration_year { "2018" }
+    credit_card_expiration_year { Time.now.year + 2 }
   end
 
   factory :payment_method_debit_card, :parent => :payment_method_credit_card do

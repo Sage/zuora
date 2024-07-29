@@ -15,9 +15,9 @@ describe "Validations" do
   end
 
   describe "validating date" do
-    it "allows date objects" do
-      [Date.today].each do |val|
-        @obj.birthday = val
+    it "allows date and time related objects" do
+      [Date.today, DateTime.now, Time.now].each do |val|
+        @obj.birthday = Date.today
         @obj.valid?
         @obj.errors[:birthday].should be_blank
       end

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Zuora::Objects::PaymentMethod do
   before :each do
+    allow_any_instance_of(Zuora::Api).to receive(:session).and_return double(key: 'session_key')
     @account = double(Zuora::Objects::Account, id: 1)
   end
 
@@ -39,52 +40,45 @@ describe Zuora::Objects::PaymentMethod do
   describe "validations" do
     describe "credit_card_expiration_year" do
       let(:payment_method) {Zuora::Objects::PaymentMethod.new(:type => "CreditCard")}
-      it "should allow this year" do
+      it 'does not allow this year' do
         payment_method.credit_card_expiration_year = Time.now.year
         payment_method.valid?
-        payment_method.errors[:credit_card_expiration_year].should_not include("must be greater than or equal to #{Time.now.year}")
+        expect(payment_method.errors[:credit_card_expiration_year]).to include("must be greater than #{Time.now.year}")
       end
 
-      it "should not allow last year" do
+      it 'should not allow last year' do
         payment_method.credit_card_expiration_year = (Time.now - 1.year).year
         payment_method.valid?
-        payment_method.errors[:credit_card_expiration_year].should include("must be greater than or equal to #{Time.now.year}")
+        expect(payment_method.errors[:credit_card_expiration_year]).to include("must be greater than #{Time.now.year}")
       end
 
-      it "should allow next year" do
+      it 'should allow next year' do
         payment_method.credit_card_expiration_year = (Time.now + 1.year).year
         payment_method.valid?
-        payment_method.errors[:credit_card_expiration_year].should_not include("must be greater than or equal to #{Time.now.year}")
+        expect(payment_method.errors[:credit_card_expiration_year])
+          .to_not include("must be greater than #{Time.now.year}")
       end
     end
   end
 
-  describe "Credit Card" do
-    it "generates proper request xml" do
+  describe 'Credit Card' do
+    it 'generates proper request xml' do
       MockResponse.responds_with(:payment_method_credit_card_create_success) do
+        expect(Zuora::Api.instance.client).to receive(:call).with(
+          :create,
+          {
+            message: '<zns:zObjects xsi:type="ons:PaymentMethod"><ons:AccountId>1</ons:AccountId>'\
+              '<ons:CreditCardAddress1>123 Testing Lane</ons:CreditCardAddress1><ons:CreditCardCity>San Francisco'\
+              '</ons:CreditCardCity><ons:CreditCardExpirationMonth>9</ons:CreditCardExpirationMonth>'\
+              '<ons:CreditCardExpirationYear>2025</ons:CreditCardExpirationYear><ons:CreditCardHolderName>'\
+              'Example User</ons:CreditCardHolderName><ons:CreditCardNumber>4111111111111111</ons:CreditCardNumber>'\
+              '<ons:CreditCardPostalCode>95611</ons:CreditCardPostalCode><ons:CreditCardState>California'\
+              '</ons:CreditCardState><ons:CreditCardType>Visa</ons:CreditCardType><ons:Type>CreditCard</ons:Type>'\
+              '<ons:UseDefaultRetryRule>true</ons:UseDefaultRetryRule></zns:zObjects>',
+            soap_header: { 'env:SessionHeader' => {  'zns:Session' => 'session_key' } }
+          }
+        ).and_call_original
         FactoryBot.create(:payment_method_credit_card, :account => @account, credit_card_expiration_year: '2025')
-
-        xml = Zuora::Api.instance.last_request
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:Type").
-          with_value('CreditCard')
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:CreditCardAddress1").
-          with_value('123 Testing Lane')
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:CreditCardCity").
-          with_value('San Francisco')
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:CreditCardState").
-          with_value('California')
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:CreditCardPostalCode").
-          with_value('95611')
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:CreditCardHolderName").
-          with_value('Example User')
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:CreditCardNumber").
-          with_value('4111111111111111')
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:CreditCardType").
-          with_value('Visa')
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:CreditCardExpirationMonth").
-          with_value('9')
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:CreditCardExpirationYear").
-          with_value('2025')
       end
     end
 
@@ -99,21 +93,18 @@ describe Zuora::Objects::PaymentMethod do
   context 'ACH' do
     it 'generates proper request xml' do
       MockResponse.responds_with(:payment_method_ach_create_success) do
+        expect(Zuora::Api.instance.client).to receive(:call).with(
+          :create,
+          {
+            message: '<zns:zObjects xsi:type="ons:PaymentMethod"><ons:AccountId>1</ons:AccountId><ons:AchAbaCode>'\
+              '123456789</ons:AchAbaCode><ons:AchAccountName>My Checking Account</ons:AchAccountName>'\
+              '<ons:AchAccountNumber>987654321</ons:AchAccountNumber><ons:AchAccountType>BusinessChecking'\
+              '</ons:AchAccountType><ons:AchBankName>Bank of Zuora</ons:AchBankName><ons:Type>ACH</ons:Type>'\
+              '<ons:UseDefaultRetryRule>true</ons:UseDefaultRetryRule></zns:zObjects>',
+            soap_header: { 'env:SessionHeader' => {  'zns:Session' => 'session_key' } }
+          }
+        ).and_call_original
         FactoryBot.create(:payment_method_ach, account: @account)
-
-        xml = Zuora::Api.instance.last_request
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:Type")
-          .with_value('ACH')
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:AchAbaCode")
-          .with_value('123456789')
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:AchAccountName")
-          .with_value('My Checking Account')
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:AchBankName")
-          .with_value('Bank of Zuora')
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:AchAccountNumber")
-          .with_value('987654321')
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:AchAccountType")
-          .with_value('BusinessChecking')
       end
     end
 
@@ -128,18 +119,17 @@ describe Zuora::Objects::PaymentMethod do
   context 'PayPal' do
     it 'generates proper request xml' do
       MockResponse.responds_with(:payment_method_ach_create_success) do
+        expect(Zuora::Api.instance.client).to receive(:call).with(
+          :create,
+          {
+            message: '<zns:zObjects xsi:type="ons:PaymentMethod"><ons:AccountId>1</ons:AccountId><ons:PaypalBaid>'\
+              'ExampleBillingAgreementId</ons:PaypalBaid><ons:PaypalEmail>example@example.org</ons:PaypalEmail>'\
+              '<ons:PaypalType>ExpressCheckout</ons:PaypalType><ons:Type>PayPal</ons:Type><ons:UseDefaultRetryRule>'\
+              'true</ons:UseDefaultRetryRule></zns:zObjects>',
+            soap_header: { 'env:SessionHeader' => {  'zns:Session' => 'session_key' } }
+          }
+        ).and_call_original
         FactoryBot.create(:payment_method_paypal, account: @account)
-
-        xml = Zuora::Api.instance.last_request
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:Type")
-          .with_value('PayPal')
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:PaypalBaid")
-          .with_value('ExampleBillingAgreementId')
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:PaypalEmail")
-          .with_value('example@example.org')
-        xml.should have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:PaypalType")
-          .with_value('ExpressCheckout')
-        xml.should_not have_xml("//env:Body/#{zns}:create/#{zns}:zObjects/#{ons}:PaypalPreapprovalKey")
       end
     end
   end
